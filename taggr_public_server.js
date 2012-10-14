@@ -300,12 +300,12 @@ console.log("starting server");
 app.listen(3727);
 
 
-app.get('/newuid/:uid/:access_token', function(req, res) {
+app.get('/newuid/:uid/', function(req, res) {
 
   console.log("Hey someone tagged!");
 
   uid = req.params.uid;
-  access_token = req.params.access_token;
+  access_token = req.session.access_token;
 
   // Save the uid with the access token
   console.log(uid);

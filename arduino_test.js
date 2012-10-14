@@ -57,9 +57,6 @@ serialPort.on("data", function (data) {
       else if (!browser_socket) {
          sys.puts("Received a UID but socket is nil");
       }
-
-      // Debug
-    	sys.puts("I got some stuff:" + uid);
     }
 });
 
