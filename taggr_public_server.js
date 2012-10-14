@@ -15,6 +15,9 @@ var hostUrl = 'http://thepaulbooth.com:3727';
 var express = require('express'),
     app = express();
 
+var easymongo = require('easymongo');
+var mongo = new easymongo({db: 'taggrdb'});
+
 var verified_users = [];
 // For cookies! So each person who connects is not all the same person
 var MemoryStore = require('connect').session.MemoryStore;
@@ -253,6 +256,15 @@ app.get('/room/:room_name', function(req, res) {
   var room_name = req.params.room_name;
   var room_image = req.query["room_image"] || 'http://www.classcarpetny.com/wp-content/uploads/2012/03/room.jpg';
   res.render('room.jade', {room_name: room_name, room_image: room_image});
+});
+
+
+app.get('/uid/:uid', function(req, res) {
+  var uid = req.params.uid;
+  mongo.find('uids', {uid: uid}, function(results) {
+    console.log(results); // false if not found
+    res.send(results);
+  });
 });
 
 console.log("starting server");
