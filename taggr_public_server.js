@@ -317,7 +317,7 @@ app.get('/newuid/:uid', function(req, res) {
   // Save the uid with the access token
   console.log(uid);
   console.log(access_token);
-
+  res.redirect('/');
   // Create a timeline post
 
   // Serve a new page
