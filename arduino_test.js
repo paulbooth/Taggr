@@ -1,7 +1,9 @@
 var serialport = require("serialport");
 var SerialPort = serialport.SerialPort;
 var sys = require('sys');
-var serialPort = new SerialPort("/dev/tty.usbmodemfd121", { 
+// var arduino_port = "/dev/tty.usbmodemfd121";
+var arduino_port = "/dev/tty.usbmodem1421";
+var serialPort = new SerialPort(arduino_port, { 
     parser: serialport.parsers.readline("\n") 
   });
 
