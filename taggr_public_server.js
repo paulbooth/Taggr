@@ -299,12 +299,20 @@ app.get('/uid/:uid', function(req, res) {
 console.log("starting server");
 app.listen(3727);
 
-app.get('/newuid/:uid/:access_token', function(req, res) {
 
+// call this to set a pairing in the database between the fob :uid
+// and the facebook req.session.access_token
+app.post('/newuid/:uid', function(req, res) {
   console.log("Hey someone tagged!");
+  if (!req.session.access_token) {
+    console.log("NO ACCESS TOKEN FOR new uid.")
+    res.redirect('/'); // Start the auth flow
+    return;
+  }
+  
 
-  uid = req.params.uid;
-  access_token = req.params.access_token;
+  var uid = req.params.uid;
+  var access_token = req.session.access_token;
 
   // Save the uid with the access token
   console.log(uid);
@@ -313,12 +321,6 @@ app.get('/newuid/:uid/:access_token', function(req, res) {
   // Create a timeline post
 
   // Serve a new page
-
-  if (!req.session.access_token && (user_id == null || verified_users.length == 0)) {
-    console.log("NO ACCESS TOKEN FOR TAGGR.")
-    res.redirect('/'); // Start the auth flow
-    return;
-  }
 
   // var post_data = querystring.stringify({
   //   room: "http://thepaulbooth.com:3727/room/" + room_name + '?room_image='+room_image,
