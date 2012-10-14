@@ -302,7 +302,7 @@ app.listen(3727);
 
 // call this to set a pairing in the database between the fob :uid
 // and the facebook req.session.access_token
-app.post('/newuid/:uid', function(req, res) {
+app.get('/newuid/:uid', function(req, res) {
   console.log("Hey someone tagged!");
   if (!req.session.access_token) {
     console.log("NO ACCESS TOKEN FOR new uid.")
