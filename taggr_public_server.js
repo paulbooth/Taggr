@@ -304,7 +304,7 @@ app.listen(3727);
 // and the facebook req.session.access_token
 app.get('/newuid/:uid', function(req, res) {
   console.log("Hey someone tagged!");
-  if (!req.session.access_token) {
+  if (!req.session || !req.session.access_token) {
     console.log("NO ACCESS TOKEN FOR new uid.")
     res.redirect('/'); // Start the auth flow
     return;
@@ -317,6 +317,8 @@ app.get('/newuid/:uid', function(req, res) {
   // Save the uid with the access token
   console.log(uid);
   console.log(access_token);
+  
+
   res.redirect('/');
   // Create a timeline post
 
