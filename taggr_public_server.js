@@ -85,6 +85,7 @@ app.get('/perms', function(req, res){
       });
     }).on('error', function(e) {
       console.log('ERROR: ' + e.message);
+      console.log(redirect_path);
       console.log(JSON.stringify(e, undefined, 2))
     });
   } else {
