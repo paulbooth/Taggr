@@ -2,15 +2,8 @@
 !!! 5
 html(lang='en')
   head
-    title Door Tracker
-    script(src='jquery.js')
-    script(src='doortracker-client.js')
+    title Taggr
+    script(src='/socket.io/socket.io.js')
+    script(src='taggr-client.js')
   body
-    h1 Get ready to track some doors, #{name}!
-    h2 #{verified}
-    - if (!verified)
-      form(method="post", action="store_info")
-        input(type="submit", value="STORE THESE CREDZ")
-    - else
-      form(method="post", action="remove_info")
-        input(type="submit", value="REMOVE THESE CREDZ")
+    h1 Get ready to tag, #{name}!
