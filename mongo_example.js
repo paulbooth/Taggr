@@ -1,4 +1,5 @@
 var mongo = require('mongodb'),
+  Server = mongo.Server,
   Db = mongo.Db;
 
 var client = new Db('test', new Server("127.0.0.1", 27017, {})),
