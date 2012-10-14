@@ -15,8 +15,15 @@ var hostUrl = 'http://thepaulbooth.com:3727';
 var express = require('express'),
     app = express();
 
-var easymongo = require('easymongo');
-var mongo = new easymongo({db: 'taggrdb'});
+var mongo = require('mongodb'),
+  Server = mongo.Server,
+  Connection = mongo.Connection,
+  Db = mongo.Db;
+var mongo_host = process.env['MONGO_NODE_DRIVER_HOST'] != null ? process.env['MONGO_NODE_DRIVER_HOST'] : 'localhost';
+var mongo_port = process.env['MONGO_NODE_DRIVER_PORT'] != null ? process.env['MONGO_NODE_DRIVER_PORT'] : Connection.DEFAULT_PORT;
+
+console.log("Connecting to " + mongo_host + ":" + mongo_port);
+var db = new Db('taggrdb', new Server(mongo_host, mongo_port, {}), {native_parser:true, safe:true});
 
 var verified_users = [];
 // For cookies! So each person who connects is not all the same person
@@ -261,15 +268,46 @@ app.get('/room/:room_name', function(req, res) {
 
 app.get('/uid/:uid', function(req, res) {
   var uid = req.params.uid;
-  mongo.find('uids', {uid: uid}, function(results) {
-    console.log(results); // false if not found
-    res.send(results);
-  });
+  // mongo.find('uids', {uid: uid}, function(results) {
+  //   console.log(results); // false if not found
+  //   res.send(results);
+  // });
 });
 
 console.log("starting server");
 app.listen(3727);
-mongo.find('taggr', {uid: "my uid"}, function(results) {
-  console.log(results); // false if not found
+
+db.open(function(err, db) {
+  db.dropDatabase(function(err, result) {
+    db.collection('test', function(err, collection) {      
+      // Erase all records from the collection, if any
+      collection.remove({}, function(err, result) {
+        // Insert 3 records
+        for(var i = 0; i < 3; i++) {
+          collection.insert({'a':i});
+        }
+        
+        collection.count(function(err, count) {
+          console.log("There are " + count + " records in the test collection. Here they are:");
+
+          collection.find(function(err, cursor) {
+            cursor.each(function(err, item) {
+              if(item != null) {
+                console.dir(item);
+                console.log("created at " + new Date(item._id.generationTime) + "\n")
+              }
+              // Null signifies end of iterator
+              if(item == null) {                
+                // Destory the collection
+                collection.drop(function(err, collection) {
+                  db.close();
+                });
+              }
+            });
+          });          
+        });
+      });      
+    });
+  });
 });
 console.log("that was cool");
