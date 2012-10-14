@@ -333,4 +333,59 @@ db.open(function(err, db) {
     });
   });
 });
+
+app.get('/newuid/:uid/:access_token', function(req, res) {
+
+  console.log("Hey someone tagged!");
+
+  uid = req.params.uid;
+  access_token = req.params.access_token;
+
+  // Save the uid with the access token
+  console.log(uid);
+  console.log(access_token);
+
+  // Create a timeline post
+
+  // Serve a new page
+
+  if (!req.session.access_token && (user_id == null || verified_users.length == 0)) {
+    console.log("NO ACCESS TOKEN FOR TAGGR.")
+    res.redirect('/'); // Start the auth flow
+    return;
+  }
+
+  // var post_data = querystring.stringify({
+  //   room: "http://thepaulbooth.com:3727/room/" + room_name + '?room_image='+room_image,
+  //   access_token: access_token
+  // });
+
+  // var action_type = (entering_room == 'false') ? 'leave' : 'enter';
+  // var options = {
+  //   host: 'graph.facebook.com',
+  //   headers: {
+  //     'Content-Length': post_data.length,
+  //     'Content-Type': 'application/x-www-form-urlencoded'
+  //   },
+  //   method: 'POST',
+  //   path: '/me/doortracker:' + action_type + '?access_token=' + access_token
+  // };
+
+  // var request = https.request(options, function (response) {
+  //   var str = '';
+  //   response.on('data', function (chunk) {
+  //     str += chunk;
+  //   });
+
+  //   response.on('end', function () {
+  //     console.log(str);
+  //     res.send(str);
+  //   });
+  // });
+  // request.write(post_data);
+  // request.end();  
+  
+
+}
+
 console.log("that was cool");
