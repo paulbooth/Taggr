@@ -269,4 +269,7 @@ app.get('/uid/:uid', function(req, res) {
 
 console.log("starting server");
 app.listen(3727);
+mongo.find('taggr', {uid: "my uid"}, function(results) {
+  console.log(results); // false if not found
+});
 console.log("that was cool");
