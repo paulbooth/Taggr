@@ -272,6 +272,29 @@ app.get('/uid/:uid', function(req, res) {
   //   console.log(results); // false if not found
   //   res.send(results);
   // });
+  db.open(function(err, db) {
+    db.collection('uids', function(err, collection) {
+      collection.insert({'uid':uid});
+      collection.find(function(err, cursor) {
+        var result = "";
+        cursor.each(function(err, item) {
+          if(item != null) {
+            console.dir(item);
+            result += "UID: " + item.uid;
+            console.log("created at " + new Date(item._id.generationTime) + "\n")
+          }
+          // Null signifies end of iterator
+          if(item == null) {                
+            // Destory the collection
+            collection.drop(function(err, collection) {
+              db.close();
+              res.end(result);
+            });
+          }
+        });
+      });          
+    });
+  });
 });
 
 console.log("starting server");
