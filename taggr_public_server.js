@@ -353,5 +353,5 @@ app.post('/newuid/:uid', function(req, res) {
   // request.end();  
   
 
-}
+});
 console.log("that was cool");
