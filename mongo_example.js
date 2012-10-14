@@ -1,3 +1,6 @@
+var mongo = require('mongodb'),
+  Db = mongo.Db;
+
 var client = new Db('test', new Server("127.0.0.1", 27017, {})),
         test = function (err, collection) {
           collection.insert({a:2}, function(err, docs) {
