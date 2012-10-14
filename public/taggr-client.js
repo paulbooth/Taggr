@@ -1,4 +1,4 @@
-  var browser_socket = io.connect('http://localhost');
+  var browser_socket = io.connect('http://localhost:8080');
   browser_socket.on('uid', function (data) {
 
     alert("Received a UID! It's " + data.uid);
