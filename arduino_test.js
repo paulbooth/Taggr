@@ -44,21 +44,42 @@ serialPort.on("data", function (data) {
       // Save this uid
       last_unclaimed_fob = uid;
 
-      // If we already have a connection to the browser
-      if (connected_to_browser && browser_socket) {
+      var options = {
+        host: 'thepaulbooth.com',
+        port: 3727,
+        path: '/try_check_in/' + encodeURIComponent(uid)
+      };
 
-        // Send over the uid!
-        browser_socket.emit('uid', { uid: last_unclaimed_fob });
+      http.get(options, function(res) {
+        var output = '';
+        res.on('error', function(e) {
+          console.log('ERROR with try_check_in: ' + e.message);
+        });
 
-        sys.puts("Sending over UID:" + uid);
-      }
+        console.log("try_check_in status:" + res.statusCode);
+        // if we were able to check in (fob ID recognized already)
+        if (res.statusCode == 200) {
+          console.log("Okay, the response means already recognized and made OG post");
+        } else if (res.statusCode == 205) {
+          // if the fob ID is unrecognized in the DB
+          // we must have a new fob that needs linked.
 
-      else if (!connected_to_browser) {
-        sys.puts("Received a UID but not connected to browser");
-      }
-      else if (!browser_socket) {
-         sys.puts("Received a UID but socket is nil");
-      }
+          // If we already have a connection to the browser
+          if (connected_to_browser && browser_socket) {
+
+            // Send over the uid!
+            browser_socket.emit('newuid', { uid: last_unclaimed_fob });
+
+            sys.puts("Sending over UID:" + uid);
+          }
+
+          else if (!connected_to_browser) {
+            sys.puts("Received a UID but not connected to browser");
+          }
+          else if (!browser_socket) {
+             sys.puts("Received a UID but socket is nil");
+          }
+        }
     }
 });
 

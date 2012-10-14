@@ -137,54 +137,6 @@ app.get('/taggr', function(req, res) {
   //res.send("CHATTING IT UP, " + my_user.name + ", with: <ul><li>" + ONLINE.join('</li><li>') + '</li></ul>');
 });
 
-// when someone walks into a room, this posts to the FB timeline
-app.get('/personwalkedinto/:room_name', function(req, res) {
-  console.log("Hey someone walked!");
-  var user_id = req.query["user_id"];
-  var entering_room = req.query["entering_room"];
-  var room_image = req.query["room_image"] || 'http://www.classcarpetny.com/wp-content/uploads/2012/03/room.jpg'
-  console.log("entering room:" + entering_room);
-  console.log(typeof(entering_room));
-  if (!req.session.access_token && (user_id == null || verified_users.length == 0)) {
-    console.log("NO ACCESS TOKEN AT PERSON WALKED.")
-    res.redirect('/'); // Start the auth flow
-    return;
-  }
-  var access_token = req.session.access_token || verified_users[user_id % verified_users.length].access_token;
-  var room_name = req.params.room_name;
-  console.log("ROOM NAME:" + room_name);
-  // we are going to handle the person walking now
-
-  var post_data = querystring.stringify({
-    room: "http://thepaulbooth.com:3727/room/" + room_name + '?room_image='+room_image,
-    access_token: access_token
-  });
-
-  var action_type = (entering_room == 'false') ? 'leave' : 'enter';
-  var options = {
-    host: 'graph.facebook.com',
-    headers: {
-      'Content-Length': post_data.length,
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    method: 'POST',
-    path: '/me/doortracker:' + action_type + '?access_token=' + access_token
-  };
-
-  var request = https.request(options, function (response) {
-    var str = '';
-    response.on('data', function (chunk) {
-      str += chunk;
-    });
-
-    response.on('end', function () {
-      console.log(str);
-      res.send(str);
-    });
-  });
-  request.write(post_data);
-  request.end();  
-});
 
 // checks to see if a fbid is stored already
 function check_verified(fbid) {
@@ -267,28 +219,47 @@ app.get('/room/:room_name', function(req, res) {
   res.render('room.jade', {room_name: room_name, room_image: room_image});
 });
 
-
-app.get('/uid/:uid', function(req, res) {
-  var uid = req.params.uid;
-  // mongo.find('uids', {uid: uid}, function(results) {
-  //   console.log(results); // false if not found
-  //   res.send(results);
-  // });
+app.get('/uids', function(req, res) {
   db.open(function(err, db) {
     db.collection('uids', function(err, collection) {
-      collection.insert({'uid':uid});
-      collection.find(function(err, cursor) {
+      collection.find( function(err, cursor) {
         var result = "";
         cursor.each(function(err, item) {
           if(item != null) {
             console.dir(item);
-            result += "UID: " + item.uid;
-            console.log("created at " + new Date(item._id.generationTime) + "\n")
+            //console.log("created at " + new Date(item._id.generationTime) + "\n")
+            result += "\n" + item.uid + ":" + item.access_token;
           }
           // Null signifies end of iterator
           if(item == null) {
             db.close();
-            res.end(result);
+            res.send(result);
+          }
+        });
+      });          
+    });
+  });
+});
+
+
+app.get('/try_check_in/:uid', function(req, res) {
+  var uid = req.params.uid;
+  db.open(function(err, db) {
+    db.collection('uids', function(err, collection) {
+      collection.find({'uid':uid}, function(err, cursor) {
+        var alreadyStored = false;
+        cursor.each(function(err, item) {
+          if(item != null) {
+            console.dir(item);
+            //console.log("created at " + new Date(item._id.generationTime) + "\n")
+            alreadyStored = true;
+            makeOpenGraphPost(item.access_token)
+          }
+          // Null signifies end of iterator
+          if(item == null) {
+            db.close();
+            res.statusCode = alreadyStored? 200 : 205;
+            res.send();
           }
         });
       });          
@@ -298,7 +269,6 @@ app.get('/uid/:uid', function(req, res) {
 
 console.log("starting server");
 app.listen(3727);
-
 
 // call this to set a pairing in the database between the fob :uid
 // and the facebook req.session.access_token
@@ -317,6 +287,29 @@ app.get('/newuid/:uid', function(req, res) {
   console.log(uid);
   console.log(access_token);
   
+  db.open(function(err, db) {
+    db.collection('uids', function(err, collection) {
+      collection.find({'uid':uid}, function(err, cursor) {
+        var alreadyStored = false;
+        cursor.each(function(err, item) {
+          if(item != null) {
+            console.log("Found this UID in the DB: " + item.uid);
+            alreadyStored = true;
+            //console.log("created at " + new Date(item._id.generationTime) + "\n")
+          }
+          // Null signifies end of iterator
+          if(item == null) {
+            
+            if (!alreadyStored) {
+              console.log("storing this into DB:" + uid +"\t " + req.session.user.name);
+              collection.insert({'uid':uid, 'access_token':access_token});
+            }
+            db.close();
+          }
+        });
+      });
+    });
+  });
 
   res.redirect('/');
   // Create a timeline post
