@@ -233,6 +233,7 @@ app.get('/uids', function(req, res) {
           // Null signifies end of iterator
           if(item == null) {
             db.close();
+            res.setHeader('Content-Type', 'text/plain');
             res.send(result);
           }
         });
