@@ -14,7 +14,7 @@ var client = new Db('test', new Server("127.0.0.1", 27017, {}), {safe:true}),
             collection.find().toArray(function(err, results) {
               // test.assertEquals(1, results.length);
               // test.assertTrue(results[0].a === 2);
-
+              console.log(results);
               // Let's close the db
               client.close();
             });
