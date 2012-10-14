@@ -1,27 +1,25 @@
 // door tracker
-var apiKey = '423298101062880';
-var secretKey = '3ea916ceaa6675538845a6ad37268692';
+// var apiKey = '423298101062880';
+// var secretKey = '3ea916ceaa6675538845a6ad37268692';
 
 //taggr
-// var apiKey = '162309810576217';
-// var secretKey = 'cfcce3d3e6a2cec6bae74c90b9ca3387';
+var apiKey = '162309810576217';
+var secretKey = 'cfcce3d3e6a2cec6bae74c90b9ca3387';
 
 var argv = process.argv;
 var https = require('https');
 var querystring = require('querystring');
 
-// stores the verified_users
-var verified_users = [];
-
-var hostUrl = 'http://thepaulbooth.com:3031';
+var hostUrl = 'http://thepaulbooth.com:3727';
 
 var express = require('express'),
     app = express();
 
+var verified_users = [];
 // For cookies! So each person who connects is not all the same person
 var MemoryStore = require('connect').session.MemoryStore;
 app.use(express.cookieParser());
-app.use(express.session({ secret: "doortracker", store: new MemoryStore({ reapInterval:  60000 * 10 })}));
+app.use(express.session({ secret: "taggr", store: new MemoryStore({ reapInterval:  60000 * 10 })}));
 
 app.set('views', __dirname + '/views');
 app.use(express.static(__dirname + '/public'));
@@ -146,7 +144,7 @@ app.get('/personwalkedinto/:room_name', function(req, res) {
   // we are going to handle the person walking now
 
   var post_data = querystring.stringify({
-    room: "http://thepaulbooth.com:3031/room/" + room_name + '?room_image='+room_image,
+    room: "http://thepaulbooth.com:3727/room/" + room_name + '?room_image='+room_image,
     access_token: access_token
   });
 
@@ -258,5 +256,5 @@ app.get('/room/:room_name', function(req, res) {
 });
 
 console.log("starting server");
-app.listen(3031);
+app.listen(3727);
 console.log("that was cool");
