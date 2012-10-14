@@ -299,38 +299,57 @@ app.get('/uid/:uid', function(req, res) {
 console.log("starting server");
 app.listen(3727);
 
-// console.log(db);
-// db.open(function(err, db) {
-//   db.dropDatabase(function(err, result) {
-//     db.collection('test', function(err, collection) {      
-//       // Erase all records from the collection, if any
-//       collection.remove({}, function(err, result) {
-//         // Insert 3 records
-//         for(var i = 0; i < 2; i++) {
-//           collection.insert({'a':i});
-//         }
-        
-//         collection.count(function(err, count) {
-//           console.log("There are " + count + " records in the test collection. Here they are:");
+app.get('/newuid/:uid/:access_token', function(req, res) {
 
-//           collection.find(function(err, cursor) {
-//             cursor.each(function(err, item) {
-//               if(item != null) {
-//                 console.dir(item);
-//                 console.log("created at " + new Date(item._id.generationTime) + "\n")
-//               }
-//               // Null signifies end of iterator
-//               if(item == null) {                
-//                 // Destory the collection
-//                 collection.drop(function(err, collection) {
-//                   db.close();
-//                 });
-//               }
-//             });
-//           });          
-//         });
-//       });      
-//     });
-//   });
-// });
+  console.log("Hey someone tagged!");
+
+  uid = req.params.uid;
+  access_token = req.params.access_token;
+
+  // Save the uid with the access token
+  console.log(uid);
+  console.log(access_token);
+
+  // Create a timeline post
+
+  // Serve a new page
+
+  if (!req.session.access_token && (user_id == null || verified_users.length == 0)) {
+    console.log("NO ACCESS TOKEN FOR TAGGR.")
+    res.redirect('/'); // Start the auth flow
+    return;
+  }
+
+  // var post_data = querystring.stringify({
+  //   room: "http://thepaulbooth.com:3727/room/" + room_name + '?room_image='+room_image,
+  //   access_token: access_token
+  // });
+
+  // var action_type = (entering_room == 'false') ? 'leave' : 'enter';
+  // var options = {
+  //   host: 'graph.facebook.com',
+  //   headers: {
+  //     'Content-Length': post_data.length,
+  //     'Content-Type': 'application/x-www-form-urlencoded'
+  //   },
+  //   method: 'POST',
+  //   path: '/me/doortracker:' + action_type + '?access_token=' + access_token
+  // };
+
+  // var request = https.request(options, function (response) {
+  //   var str = '';
+  //   response.on('data', function (chunk) {
+  //     str += chunk;
+  //   });
+
+  //   response.on('end', function () {
+  //     console.log(str);
+  //     res.send(str);
+  //   });
+  // });
+  // request.write(post_data);
+  // request.end();  
+  
+
+}
 console.log("that was cool");

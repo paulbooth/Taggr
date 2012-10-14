@@ -142,16 +142,17 @@ io.sockets.on('connection', function (socket) {
 
     // Set our global socket to it for later
     browser_socket = socket;
+    last_unclaimed_fob = 0;
   }
 
   // If we already have an unclaimed fob
-  if (last_unclaimed_fob) {
+  // if (last_unclaimed_fob) {
 
-      // Send it over
-      socket.emit('uid', { uid: last_unclaimed_fob });
+  //     // Send it over
+  //     socket.emit('uid', { uid: last_unclaimed_fob });
 
-        sys.puts("Sent the uid");
-  }
+  //       sys.puts("Sent the uid");
+  // }
 });
 
 server.listen(8080);
