@@ -23,7 +23,7 @@ var mongo_host = process.env['MONGO_NODE_DRIVER_HOST'] != null ? process.env['MO
 var mongo_port = process.env['MONGO_NODE_DRIVER_PORT'] != null ? process.env['MONGO_NODE_DRIVER_PORT'] : Connection.DEFAULT_PORT;
 
 console.log("Connecting to " + mongo_host + ":" + mongo_port);
-var db = new Db('taggrdb', new Server(mongo_host, mongo_port, {}), { safe:true});
+var db = new Db('taggrdb', new Server(mongo_host, mongo_port, {}), {});
 
 var verified_users = [];
 // For cookies! So each person who connects is not all the same person
