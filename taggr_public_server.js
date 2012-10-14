@@ -286,12 +286,9 @@ app.get('/uid/:uid', function(req, res) {
             console.log("created at " + new Date(item._id.generationTime) + "\n")
           }
           // Null signifies end of iterator
-          if(item == null) {                
-            // Destory the collection
-            collection.drop(function(err, collection) {
-              db.close();
-              res.end(result);
-            });
+          if(item == null) {
+            db.close();
+            res.end(result);
           }
         });
       });          
@@ -302,6 +299,7 @@ app.get('/uid/:uid', function(req, res) {
 console.log("starting server");
 app.listen(3727);
 
+console.log(db);
 db.open(function(err, db) {
   db.dropDatabase(function(err, result) {
     db.collection('test', function(err, collection) {      
