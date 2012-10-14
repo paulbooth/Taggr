@@ -85,6 +85,8 @@ app.get('/perms', function(req, res){
       });
     }).on('error', function(e) {
       console.log('ERROR: ' + e.message);
+      console.log(redirect_path);
+      console.log(JSON.stringify(e, undefined, 2))
     });
   } else {
     console.error("WHAT THE HECK WE AREN'T AUTHED?????? %s", state);
@@ -272,11 +274,32 @@ app.get('/uid/:uid', function(req, res) {
   //   console.log(results); // false if not found
   //   res.send(results);
   // });
+  db.open(function(err, db) {
+    db.collection('uids', function(err, collection) {
+      collection.insert({'uid':uid});
+      collection.find(function(err, cursor) {
+        var result = "";
+        cursor.each(function(err, item) {
+          if(item != null) {
+            console.dir(item);
+            result += "UID: " + item.uid;
+            console.log("created at " + new Date(item._id.generationTime) + "\n")
+          }
+          // Null signifies end of iterator
+          if(item == null) {
+            db.close();
+            res.end(result);
+          }
+        });
+      });          
+    });
+  });
 });
 
 console.log("starting server");
 app.listen(3727);
 
+console.log(db);
 db.open(function(err, db) {
   db.dropDatabase(function(err, result) {
     db.collection('test', function(err, collection) {      
