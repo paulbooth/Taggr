@@ -299,7 +299,7 @@ app.get('/uid/:uid', function(req, res) {
 console.log("starting server");
 app.listen(3727);
 
-console.log(db);
+// console.log(db);
 // db.open(function(err, db) {
 //   db.dropDatabase(function(err, result) {
 //     db.collection('test', function(err, collection) {      
