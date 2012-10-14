@@ -7,10 +7,9 @@ var serialPort = new SerialPort("/dev/tty.usbmodem1421", {
 
 serialPort.on("data", function (data) {
     sys.puts("here: "+data);
-    var prefix = "Reading Block:"; // The prefix before the data we care about comes through
+    var prefix = "  UID Value: "; // The prefix before the data we care about comes through
     if (data.indexOf(prefix) == 0) {
     	sys.puts("I got some stuff:" + data.substring(prefix.length))
-
     }
 });
 
