@@ -283,7 +283,7 @@ db.open(function(err, db) {
       // Erase all records from the collection, if any
       collection.remove({}, function(err, result) {
         // Insert 3 records
-        for(var i = 0; i < 1; i++) {
+        for(var i = 0; i < 2; i++) {
           collection.insert({'a':i});
         }
         
