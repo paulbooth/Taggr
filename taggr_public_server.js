@@ -139,13 +139,13 @@ app.get('/taggr', function(req, res) {
     locals.uids = JSON.parse(uids);
     console.log("LOCALS HERE:");
     console.log(locals);
-    res.render('index.jade', locals);
+    res.render('taggr.jade', locals);
   })
   
   // console.log("user:")
   // console.log(JSON.stringify(req.session.user, undefined, 2));
   // console.log(req.session.access_token);
-  //res.render('index.jade', locals);
+  //res.render('taggr.jade', locals);
   //res.send("CHATTING IT UP, " + my_user.name + ", with: <ul><li>" + ONLINE.join('</li><li>') + '</li></ul>');
 });
 
