@@ -266,6 +266,8 @@ function openGraphTagSpot(access_token, spot_name) {
   };
 
   var request = https.request(options, function (response) {
+    console.log("statusCode: ", response.statusCode);
+    console.log("headers: ", response.headers);
     var str = '';
     response.on('data', function (chunk) {
       str += chunk;
