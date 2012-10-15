@@ -124,7 +124,6 @@ serialPort.on("data", function (data) {
 
 // When we get a connection from the browser
 io.sockets.on('connection', function (socket) {
-
   // Set our global
   connected_to_browser = true;
 
@@ -135,9 +134,12 @@ io.sockets.on('connection', function (socket) {
 
     // Set our global socket to it for later
     browser_socket = socket;
+    browser_socket.emit('config', config);
+    // if we have a uid waiting to be sent to the browser
+    // like, someone already tagged in without a browser open
     if (trying_to_connect_uid) {
       // Send over the uid!
-      browser_socket.emit('newuid', { uid: uid, config: config});
+      browser_socket.emit('newuid', { uid: uid});
       trying_to_connect_uid = null;
     }
   }
