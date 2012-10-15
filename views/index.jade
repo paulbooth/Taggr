@@ -7,14 +7,15 @@ html(lang='en')
     script(src='jquery.js')
     script(src='taggr-client.js')
   body
-    h1(id='spot_name') Trying to connect to local spot...
+    span
+      h1(id='spot_name') Trying to connect to local spot...
+    span
+      div(id="image_div")
     h1 Get ready to tag, #{name}!
     - if(uids.length)
       h2 You have an active taggr.
     - else
       h2 You don't have a taggr associated with your account. Please Tap your taggr to activate it.
-    br
-    div(id="image_div")
     br
     a(href='/logout') Logout
     br
