@@ -172,11 +172,14 @@ app.get('/uids', function(req, res) {
 });
 
 app.get('/logout', function(req, res) {
-  if (req.session) {
+  if (!req.session.access_token) {
+    res.redirct('/');
+    return;
+  }
+  var fbLogoutUri = 'https://www.facebook.com/logout.php?next=' + hostUrl + '/&access_token=' + req.session.access_token
   req.session.user = null;
   req.session.access_token = null;
-  }
-  res.redirect('/');
+  res.redirect(fbLogoutUri);
 });
 
 // Will post to facebook if linked (return 200). Otherwise, returns a 205.
