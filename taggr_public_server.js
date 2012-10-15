@@ -175,7 +175,7 @@ app.get('/uids', function(req, res) {
 
 app.get('/logout', function(req, res) {
   if (!req.session.access_token) {
-    res.redirct('/');
+    res.redirect('/');
     return;
   }
   var fbLogoutUri = 'https://www.facebook.com/logout.php?next=' + hostUrl + '/&access_token=' + req.session.access_token
@@ -183,6 +183,22 @@ app.get('/logout', function(req, res) {
   req.session.access_token = null;
   res.redirect(fbLogoutUri);
 });
+
+app.get('/clear_user', function(req, res) {
+  if (!req.session.access_token) {
+    res.redirect('/');
+    return;
+  }
+
+  // Clear their access token from the db
+  disassociateUserFromTaggr(req.session.access_token);
+
+  // Refresh the page
+  res.redirect('/');
+
+});
+
+
 
 // Will post to facebook if linked (return 200). Otherwise, returns a 205.
 app.get('/try_check_in/:uid/:spot_name', function(req, res) {
