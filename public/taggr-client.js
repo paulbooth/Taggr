@@ -6,8 +6,7 @@
     // $.post("http://thepaulbooth.com:3727/newuid/" + data.uid);
     $('#connect_tag')
     	.attr('href', "http://thepaulbooth.com:3727/newuid/" + data.uid)
-    	.attr('max-width', 200)
-    	.attr('max-height', 200)
+    	.attr('width', 200)
     	.text("Click to activate ID #" + data.uid);
   });
 
