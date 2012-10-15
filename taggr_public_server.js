@@ -188,7 +188,7 @@ app.get('/logout', function(req, res) {
 app.get('/try_check_in/:uid/:spot_name', function(req, res) {
   var uid = decodeURIComponent(req.params.uid);
   var spot_name = decodeURIComponent(req.params.spot_name);
-  var spot_image = decodeURIComponent(req['spot_image']);
+  var spot_image = decodeURIComponent(req.query['spot_image']);
   // console.log("before");
   // console.log("THE UID WE ARE TYING TO FIND IS:" + uid + ":" + uid.length);
   // console.log("after");
