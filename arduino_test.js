@@ -49,7 +49,7 @@ serialPort.on("data", function (data) {
       port: 3727,
       path: '/try_check_in/' + encodeURIComponent(uid)
     };
-
+    console.log("making request to /try_check_in/" + encodeURIComponent(uid))
     http.get(options, function(res) {
       var output = '';
       res.on('error', function(e) {

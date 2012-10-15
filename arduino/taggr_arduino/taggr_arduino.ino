@@ -70,7 +70,7 @@ void loop(void) {
   uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0 };  // Buffer to store the returned UID
   uint8_t uidLength;                        // Length of the UID (4 or 7 bytes depending on ISO14443A card type)
   uint8_t shouldWrite = false;              // if should write to the fob
-  
+  Serial.println("looping");
   // Wait for an ISO14443A type cards (Mifare, etc.).  When one is found
   // 'uid' will be populated with the UID, and uidLength will indicate
   // if the uid is 4 bytes (Mifare Classic) or 7 bytes (Mifare Ultralight)
@@ -129,7 +129,7 @@ void loop(void) {
         }
         else
         {
-          Serial.println("Ooops ... unable to read the requested block.  Try another key?");
+          Serial.println("O  ... unable to read the requested block.  Try another key?");
         }
       }
       else
