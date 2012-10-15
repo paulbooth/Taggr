@@ -1,3 +1,6 @@
+var spot_name = "SCOPE Room";
+
+
 var serialport = require("serialport");
 var SerialPort = serialport.SerialPort;
 var sys = require('sys');
@@ -17,6 +20,19 @@ var server = http.createServer(app);
 
 var io = require('socket.io').listen(server);
 var fs = require('fs');
+
+// Going to set a trim function for our strings
+
+if(typeof(String.prototype.trim) === "undefined") {
+   String.prototype.trim = function() 
+   {
+       return String(this).replace(/^\s+|\s+$/g, '');
+   };
+}
+
+
+
+
 
 // for command line things
 var childProcess = require('child_process');
@@ -42,14 +58,14 @@ serialPort.on("data", function (data) {
   if (data.indexOf(prefix) == 0) {
 
     // Grab the uid
-    uid = data.substring(prefix.length);
+    uid = data.substring(prefix.length).trim();
 
     var options = {
       host: 'thepaulbooth.com',
       port: 3727,
-      path: '/try_check_in/' + encodeURIComponent(uid)
+      path: '/try_check_in/' + encodeURIComponent(uid) + "/" + encodeURIComponent(spot_name)
     };
-    console.log("making request to /try_check_in/" + encodeURIComponent(uid))
+    console.log("making request to /try_check_in/" + encodeURIComponent(uid) + "/" + encodeURIComponent(spot_name))
     http.get(options, function(res) {
       var output = '';
       res.on('error', function(e) {
@@ -70,7 +86,7 @@ serialPort.on("data", function (data) {
           // Send over the uid!
           browser_socket.emit('newuid', { uid: uid });
 
-          sys.puts("Sending over UID:" + uid);
+          sys.puts("Sending over UID:" + uid + " okay?");
         }
 
         else if (!connected_to_browser) {
@@ -133,3 +149,6 @@ io.sockets.on('connection', function (socket) {
 });
 
 server.listen(8080);
+
+
+

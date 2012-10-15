@@ -161,14 +161,15 @@ app.get('/uids', function(req, res) {
 });
 
 
-app.get('/try_check_in/:uid', function(req, res) {
+app.get('/try_check_in/:uid/:spot_name', function(req, res) {
   var uid = decodeURIComponent(req.params.uid);
-  console.log("before");
-  console.log("THE UID WE ARE TYING TO FIND IS:" + uid + ":" + uid.length);
-  console.log("after");
+  var spot_name = decodeURIComponent(req.params.spot_name);
+  // console.log("before");
+  // console.log("THE UID WE ARE TYING TO FIND IS:" + uid + ":" + uid.length);
+  // console.log("after");
   db.open(function(err, db) {
     db.collection('uids', function(err, collection) {
-      console.log("going to try to find it now");
+      // console.log("going to try to find it now");
       collection.find({ uid : uid }, function(err, cursor) {
         var alreadyStored = false;
         cursor.each(function(err, item) {
@@ -176,22 +177,19 @@ app.get('/try_check_in/:uid', function(req, res) {
             console.dir(item);
             //console.log("created at " + new Date(item._id.generationTime) + "\n")
             alreadyStored = true;
-            //makeOpenGraphPost(item.access_token)
+            openGraphTagSpot(item.access_token, spot_name)
           }
           // Null signifies end of iterator
           if(item == null) {
             db.close();
             res.statusCode = alreadyStored? 200 : 205;
-            res.send();
+            res.end();
           }
         });
       });          
     });
   });
 });
-
-console.log("starting server");
-app.listen(3727);
 
 // call this to set a pairing in the database between the fob :uid
 // and the facebook req.session.access_token
@@ -235,40 +233,51 @@ app.get('/newuid/:uid', function(req, res) {
   });
 
   res.redirect('/');
-  // Create a timeline post
-
-  // Serve a new page
-
-  // var post_data = querystring.stringify({
-  //   room: "http://thepaulbooth.com:3727/room/" + room_name + '?room_image='+room_image,
-  //   access_token: access_token
-  // });
-
-  // var action_type = (entering_room == 'false') ? 'leave' : 'enter';
-  // var options = {
-  //   host: 'graph.facebook.com',
-  //   headers: {
-  //     'Content-Length': post_data.length,
-  //     'Content-Type': 'application/x-www-form-urlencoded'
-  //   },
-  //   method: 'POST',
-  //   path: '/me/doortracker:' + action_type + '?access_token=' + access_token
-  // };
-
-  // var request = https.request(options, function (response) {
-  //   var str = '';
-  //   response.on('data', function (chunk) {
-  //     str += chunk;
-  //   });
-
-  //   response.on('end', function () {
-  //     console.log(str);
-  //     res.send(str);
-  //   });
-  // });
-  // request.write(post_data);
-  // request.end();  
-  
 
 });
+
+// url to get a specific spot
+// each spot is an open graph object page
+// usage:
+// /spot/My Spot?spot_image=http://myspot.com/image.png
+app.get('/spot/:spot_name', function(req, res) {
+  var spot_name = req.params.spot_name;
+  var spot_image = req.query["spot_image"] || 'http://www.classcarpetny.com/wp-content/uploads/2012/03/room.jpg';
+  res.render('spot.jade', {spot_name: spot_name, spot_image: spot_image});
+});
+
+function openGraphTagSpot(access_token, spot_name) {
+  console.log("Tagging user with access token " + access_token + " at location " + spot_name);
+
+  var post_data = querystring.stringify({
+    spot: "http://thepaulbooth.com:3727/spot/" + spot_name //+ '?spot_image='+spot_image,
+    access_token: access_token
+  });
+
+  var action_type = 'tag';
+  var options = {
+    host: 'graph.facebook.com',
+    headers: {
+      'Content-Length': post_data.length,
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    method: 'POST',
+    path: '/me/fbtaggr:' + action_type + '?access_token=' + access_token
+  };
+
+  var request = https.request(options, function (response) {
+    var str = '';
+    response.on('data', function (chunk) {
+      str += chunk;
+    });
+
+    response.on('end', function () {
+      console.log(str);
+      res.send(str);
+    });
+  });
+}
+
+console.log("starting server");
+app.listen(3727);
 console.log("that was cool");
