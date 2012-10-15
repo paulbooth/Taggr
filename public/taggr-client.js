@@ -7,3 +7,7 @@
     $('#connect_tag').attr('href', "http://thepaulbooth.com:3727/newuid/" + data.uid).text("Click to activate ID #" + data.uid);
   });
 
+  browser_socket.on('config', function(data) {
+  	$('#spot_name').text("Welcome to " + data.spot_name);
+  })
+
