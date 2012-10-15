@@ -76,6 +76,7 @@ serialPort.on("data", function (data) {
       // if we were able to check in (fob ID recognized already)
       if (res.statusCode == 200) {
         console.log("Okay, the response means already recognized and made OG post");
+        announce_tag();
       } else if (res.statusCode == 205) {
         // if the fob ID is unrecognized in the DB
         // we must have a new fob that needs linked.
@@ -164,5 +165,32 @@ function getCorrectBrowserCommand() {
   } else {
     return 'xdg-open';
   }
+}
+
+function getCorrectSpeechCommand() {
+  var isWin = !!process.platform.match(/^win/i);
+  var isMac = !!process.platform.match(/^darwin/i);
+  if (isWin) {
+    return '';
+  } else if (isMac) {
+    return 'say';
+  } else {
+    return 'espeak';
+  }
+}
+
+
+function announce_tag() {
+  var thing_to_say = "Tagged. " + config.spot_name;
+  console.log("saying:" + thing_to_say);
+  var say = childProcess.exec('echo "' + thing_to_say + '" | ' + getCorrectSpeechCommand(), function (error, stdout, stderr) {
+   // if (error) {
+   //   console.log(error.stack);
+   //   console.log('Error code: '+error.code);
+   //   console.log('Signal received: '+error.signal);
+   // }
+   // console.log('Child Process STDOUT: '+stdout);
+   // console.log('Child Process STDERR: '+stderr);
+  });
 }
 
