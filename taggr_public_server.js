@@ -137,7 +137,7 @@ app.get('/taggr', function(req, res) {
   var locals = {name: req.session.user.name};
   getUidsForAccessToken(req.session.access_token, function(uids) {
     locals.uids = JSON.parse(uids);
-    console.log("LOCALS HEREREERERERE:");
+    console.log("LOCALS HERE:");
     console.log(locals);
     res.render('index.jade', locals);
   })
