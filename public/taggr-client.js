@@ -9,5 +9,10 @@
 
   browser_socket.on('config', function(data) {
   	$('#spot_name').text("Welcome to " + data.spot_name);
+  	if (data.spot_image) {
+  	  $spot_image = $('<img>');
+  	  $spot_image.attr('src', data.spot_image).attr('alt', data.spot_name)
+  	  $('#image_div').append($spot_image);
+	}
   })
 
