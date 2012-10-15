@@ -262,7 +262,7 @@ function openGraphTagSpot(access_token, spot_name) {
       'Content-Type': 'application/x-www-form-urlencoded'
     },
     method: 'POST',
-    path: '/me/fbtaggr:' + action_type + '?access_token=' + access_token
+    path: '/me/fbtaggr:' + action_type //+ '?access_token=' + access_token
   };
 
   var request = https.request(options, function (response) {
