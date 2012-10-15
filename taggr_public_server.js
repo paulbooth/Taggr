@@ -316,7 +316,7 @@ function getLocalConfig(callback) {
     path: '/config'
   };
 
-  https.get(options, function(res) {
+  http.get(options, function(res) {
     var output = '';
     res.on('data', function (chunk) {
         output += chunk;
