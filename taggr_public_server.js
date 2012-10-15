@@ -15,6 +15,10 @@ var hostUrl = 'http://thepaulbooth.com:3727';
 var express = require('express'),
     app = express();
 
+// Well, this thing works really well, so...
+var OpenGraph = require('facebook-open-graph'),
+    openGraph = new OpenGraph('fbtaggr');
+
 var mongo = require('mongodb'),
   Server = mongo.Server,
   Connection = mongo.Connection,
@@ -248,36 +252,10 @@ app.get('/spot/:spot_name', function(req, res) {
 
 function openGraphTagSpot(access_token, spot_name) {
   console.log("Tagging user with access token " + access_token + " at location " + spot_name);
-
-  var post_data = querystring.stringify({
-    spot: "http://thepaulbooth.com:3727/spot/" + spot_name, //+ '?spot_image='+spot_image,
-    access_token: access_token
-  });
-
-  var action_type = 'tag';
-  var options = {
-    host: 'graph.facebook.com',
-    headers: {
-      'Content-Length': post_data.length,
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    method: 'POST',
-    path: '/me/fbtaggr:' + action_type //+ '?access_token=' + access_token
-  };
-  console.log("making request");
-  var request = https.request(options, function (response) {
-    console.log("statusCode: ", response.statusCode);
-    console.log("headers: ", response.headers);
-    var str = '';
-    response.on('data', function (chunk) {
-      str += chunk;
-    });
-
-    response.on('end', function () {
-      console.log(str);
-    });
-  });
-  console.log("request on way");
+  openGraph.publish('me',access_token,'tag', 'spot', 'http://thepaulbooth.com:3727/spot/' + spot_name, function(err,response){
+    console.log("Error:" + err);
+    console.log(response);
+  })
 }
 
 console.log("starting server");
