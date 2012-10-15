@@ -15,7 +15,7 @@ var connected_to_browser;
 var browser_socket;
 var trying_to_connect_uid = null; // the fob id that we are trying to connect to
 var express = require('express'),
-app = express();
+  app = express();
 var server = http.createServer(app);
 
 var io = require('socket.io').listen(server);
@@ -23,10 +23,10 @@ var fs = require('fs');
 
 // Going to set a trim function for our strings
 if(typeof(String.prototype.trim) === "undefined") {
-   String.prototype.trim = function() 
-   {
-       return String(this).replace(/^\s+|\s+$/g, '');
-   };
+  String.prototype.trim = function() 
+  {
+    return String(this).replace(/^\s+|\s+$/g, '');
+  };
 }
 
 // for command line things
@@ -93,7 +93,7 @@ serialPort.on("data", function (data) {
         else if (!connected_to_browser) {
           sys.puts("Received a new UID but not connected to browser");
           browserCommand = getCorrectBrowserCommand();
-          childProcess.exec(browserCommand + ' http://thepaulbooth.com:3727', function (error, stdout, stderr) {
+          childProcess.exec(browserCommand + ' http://thepaulbooth.com:3727/login', function (error, stdout, stderr) {
             // if (error) {
             //   console.log(error.stack);
             //   console.log('Error code: '+error.code);

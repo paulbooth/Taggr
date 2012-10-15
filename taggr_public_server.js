@@ -38,8 +38,12 @@ app.use(express.session({ secret: "taggr", store: new MemoryStore({ reapInterval
 app.set('views', __dirname + '/views');
 app.use(express.static(__dirname + '/public'));
 
+app.get('/', function(req, res) {
+  res.render('index.jade');
+})
+
 // First part of Facebook auth dance
-app.get('/', function(req, res){
+app.get('/login', function(req, res){
   var redirect_url = 'https://www.facebook.com/dialog/oauth?client_id=' + apiKey +
    '&redirect_uri=' + hostUrl + '/perms' +
    '&scope=publish_actions&state=authed'
