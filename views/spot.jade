@@ -1,0 +1,13 @@
+!!! 5
+html(lang='en')
+  head(prefix='og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# fbtaggr: http://ogp.me/ns/fb/fbtaggr#')
+    meta(property='fb:app_id', content='162309810576217')
+    meta(property='og:type', content='fbtaggr:spot')
+    meta(property='og:title', content='#{spot_name}')
+    meta(property='og:image', content='#{spot_image}')
+    title= spot_name
+
+  body
+    h1 The coolest place to be is #{spot_name}!
+    img(src='#{spot_image}')
+    fb:activity(actions='fbtaggr:tag')
