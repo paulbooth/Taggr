@@ -275,7 +275,6 @@ function openGraphTagSpot(access_token, spot_name) {
 
     response.on('end', function () {
       console.log(str);
-      res.send(str);
     });
   });
   console.log("request on way");
