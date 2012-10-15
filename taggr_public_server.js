@@ -253,7 +253,6 @@ app.get('/spot/:spot_name', function(req, res) {
 function openGraphTagSpot(access_token, spot_name) {
   console.log("Tagging user with access token " + access_token + " at location " + spot_name);
   openGraph.publish('me',access_token,'tag', 'spot', 'http://thepaulbooth.com:3727/spot/' + spot_name, function(err,response){
-    console.log("Error:" + err);
     console.log(response);
   })
 }

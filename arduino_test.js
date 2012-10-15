@@ -1,5 +1,4 @@
-var spot_name = "SCOPE Room";
-
+var config = require('./config')
 
 var serialport = require("serialport");
 var SerialPort = serialport.SerialPort;
@@ -10,6 +9,7 @@ var serialPort = new SerialPort(arduino_port, {
     parser: serialport.parsers.readline("\n") 
   });
 
+var os = require('os');
 var http = require('http');
 var connected_to_browser;
 var browser_socket;
@@ -63,9 +63,9 @@ serialPort.on("data", function (data) {
     var options = {
       host: 'thepaulbooth.com',
       port: 3727,
-      path: '/try_check_in/' + encodeURIComponent(uid) + "/" + encodeURIComponent(spot_name)
+      path: '/try_check_in/' + encodeURIComponent(uid) + "/" + encodeURIComponent(config.spot_name)
     };
-    console.log("making request to /try_check_in/" + encodeURIComponent(uid) + "/" + encodeURIComponent(spot_name))
+    console.log("making request to /try_check_in/" + encodeURIComponent(uid) + "/" + encodeURIComponent(config.spot_name))
     http.get(options, function(res) {
       var output = '';
       res.on('error', function(e) {
@@ -91,7 +91,8 @@ serialPort.on("data", function (data) {
 
         else if (!connected_to_browser) {
           sys.puts("Received a new UID but not connected to browser");
-          childProcess.exec('open http://thepaulbooth.com:3727', function (error, stdout, stderr) {
+          browserCommand = getCorrectBrowserCommand();
+          childProcess.exec(browserCommand + ' http://thepaulbooth.com:3727', function (error, stdout, stderr) {
             // if (error) {
             //   console.log(error.stack);
             //   console.log('Error code: '+error.code);
@@ -150,5 +151,16 @@ io.sockets.on('connection', function (socket) {
 
 server.listen(8080);
 
-
+// helper function to get the correct commandline for opening a browser
+function getCorrectBrowserCommand() {
+  var isWin = !!process.platform.match(/^win/i);
+  var isMac = !!process.platform.match(/^darwin/i);
+  if (isWin) {
+    return 'start';
+  } else if (isMac) {
+    return 'open';
+  } else {
+    return 'xdg-open';
+  }
+}
 
