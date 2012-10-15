@@ -14,9 +14,10 @@
   	if (data.spot_image) {
   	  $spot_image = $('<img>');
   	  $spot_image
+  	  	.attr('id', 'spot_img')
   	  	.attr('src', data.spot_image).attr('alt', data.spot_name)
   	  	.attr('width', 200)
-  	  $('#image_div').append($spot_image);
+  	  $('#spot_image_div').append($spot_image);
 	}
   })
 
