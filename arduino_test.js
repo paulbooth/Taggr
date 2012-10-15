@@ -137,7 +137,7 @@ io.sockets.on('connection', function (socket) {
     browser_socket = socket;
     if (trying_to_connect_uid) {
       // Send over the uid!
-      browser_socket.emit('newuid', { uid: uid });
+      browser_socket.emit('newuid', { uid: uid, config: config});
       trying_to_connect_uid = null;
     }
   }
