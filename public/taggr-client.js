@@ -6,7 +6,6 @@
     // $.post("http://thepaulbooth.com:3727/newuid/" + data.uid);
     $('#connect_tag')
     	.attr('href', "http://thepaulbooth.com:3727/newuid/" + data.uid)
-    	.attr('width', 200)
     	.text("Click to activate ID #" + data.uid);
   });
 
@@ -14,7 +13,9 @@
   	$('#spot_name').text("Welcome to " + data.spot_name);
   	if (data.spot_image) {
   	  $spot_image = $('<img>');
-  	  $spot_image.attr('src', data.spot_image).attr('alt', data.spot_name)
+  	  $spot_image
+  	  	.attr('src', data.spot_image).attr('alt', data.spot_name)
+  	  	.attr('width', 200)
   	  $('#image_div').append($spot_image);
 	}
   })
