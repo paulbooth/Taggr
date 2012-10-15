@@ -147,6 +147,7 @@ app.get('/taggr', function(req, res) {
   //res.send("CHATTING IT UP, " + my_user.name + ", with: <ul><li>" + ONLINE.join('</li><li>') + '</li></ul>');
 });
 
+// helper endpoint for checking the DB
 app.get('/uids', function(req, res) {
   db.open(function(err, db) {
     db.collection('uids', function(err, collection) {
@@ -170,6 +171,13 @@ app.get('/uids', function(req, res) {
   });
 });
 
+app.get('/logout', function(req, res) {
+  if (req.session) {
+  req.session.user = null;
+  req.session.access_token = null;
+  }
+  res.redirect('/');
+});
 
 // Will post to facebook if linked (return 200). Otherwise, returns a 205.
 app.get('/try_check_in/:uid/:spot_name', function(req, res) {
