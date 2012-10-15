@@ -1,0 +1,15 @@
+
+!!! 5
+html(lang='en')
+  head
+    title Taggr
+    script(src='jquery.js')
+    - var activated = (uids.length > 0)
+    script
+      var activated = #{activated};
+    script(src='taggr-client.js')
+    link(rel='stylesheet', href='/default.css')
+  body
+    h1 Welcome to Taggr
+    div Taggr brings your online identity offline. Check-in to your favorite spots, stay in touch with new friends, and play new real-life games.
+    h1 a(href='/login')  Log in to access your taggr or activate a new one
