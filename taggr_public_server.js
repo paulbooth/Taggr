@@ -264,7 +264,7 @@ function openGraphTagSpot(access_token, spot_name) {
     method: 'POST',
     path: '/me/fbtaggr:' + action_type //+ '?access_token=' + access_token
   };
-
+  console.log("making request");
   var request = https.request(options, function (response) {
     console.log("statusCode: ", response.statusCode);
     console.log("headers: ", response.headers);
@@ -278,6 +278,7 @@ function openGraphTagSpot(access_token, spot_name) {
       res.send(str);
     });
   });
+  console.log("request on way");
 }
 
 console.log("starting server");
