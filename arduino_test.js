@@ -8,15 +8,18 @@ var serialPort = new SerialPort(arduino_port, {
   });
 
 var http = require('http');
-var last_unclaimed_fob;
 var connected_to_browser;
 var browser_socket;
+var trying_to_connect_uid = null; // the fob id that we are trying to connect to
 var express = require('express'),
 app = express();
 var server = http.createServer(app);
 
 var io = require('socket.io').listen(server);
 var fs = require('fs');
+
+// for command line things
+var childProcess = require('child_process');
 
 app.use("/public", express.static(__dirname + '/public'));
 
@@ -30,57 +33,76 @@ app.get('/', function(req, res){
 
 
 serialPort.on("data", function (data) {
-    sys.puts("here: "+data);
+  sys.puts("here: "+data);
 
-    // The prefix we set before the uid on the arduino end of things
-    var prefix = "  UID Value: "; // The prefix before the data we care about comes through
+  // The prefix we set before the uid on the arduino end of things
+  var prefix = "  UID Value: "; // The prefix before the data we care about comes through
 
-    // If we have a uid calue
-    if (data.indexOf(prefix) == 0) {
+  // If we have a uid calue
+  if (data.indexOf(prefix) == 0) {
 
-      // Grab the uid
-      uid = data.substring(prefix.length);
+    // Grab the uid
+    uid = data.substring(prefix.length);
 
-      // Save this uid
-      last_unclaimed_fob = uid;
+    var options = {
+      host: 'thepaulbooth.com',
+      port: 3727,
+      path: '/try_check_in/' + encodeURIComponent(uid)
+    };
 
-      var options = {
-        host: 'thepaulbooth.com',
-        port: 3727,
-        path: '/try_check_in/' + encodeURIComponent(uid)
-      };
+    http.get(options, function(res) {
+      var output = '';
+      res.on('error', function(e) {
+        console.log('ERROR with try_check_in: ' + e.message);
+      });
 
-      http.get(options, function(res) {
-        var output = '';
-        res.on('error', function(e) {
-          console.log('ERROR with try_check_in: ' + e.message);
-        });
+      console.log("try_check_in status:" + res.statusCode);
+      // if we were able to check in (fob ID recognized already)
+      if (res.statusCode == 200) {
+        console.log("Okay, the response means already recognized and made OG post");
+      } else if (res.statusCode == 205) {
+        // if the fob ID is unrecognized in the DB
+        // we must have a new fob that needs linked.
 
-        console.log("try_check_in status:" + res.statusCode);
-        // if we were able to check in (fob ID recognized already)
-        if (res.statusCode == 200) {
-          console.log("Okay, the response means already recognized and made OG post");
-        } else if (res.statusCode == 205) {
-          // if the fob ID is unrecognized in the DB
-          // we must have a new fob that needs linked.
+        // If we already have a connection to the browser
+        if (connected_to_browser && browser_socket) {
 
-          // If we already have a connection to the browser
-          if (connected_to_browser && browser_socket) {
+          // Send over the uid!
+          browser_socket.emit('newuid', { uid: uid });
 
-            // Send over the uid!
-            browser_socket.emit('newuid', { uid: last_unclaimed_fob });
-
-            sys.puts("Sending over UID:" + uid);
-          }
-
-          else if (!connected_to_browser) {
-            sys.puts("Received a UID but not connected to browser");
-          }
-          else if (!browser_socket) {
-             sys.puts("Received a UID but socket is nil");
-          }
+          sys.puts("Sending over UID:" + uid);
         }
-    }
+
+        else if (!connected_to_browser) {
+          sys.puts("Received a new UID but not connected to browser");
+          childProcess.exec('open http://thepaulbooth.com:3727', function (error, stdout, stderr) {
+            // if (error) {
+            //   console.log(error.stack);
+            //   console.log('Error code: '+error.code);
+            //   console.log('Signal received: '+error.signal);
+            // }
+            console.log('Chrome done launching.');
+            // console.log('Child Process STDERR: '+stderr);
+            // var try_to_emit_func = function() {
+            //   if (browser_socket) {
+            //     browser_socket.emit('newuid', { uid: uid });
+            //     console.log("WOO SOCKET");
+            //   } else {
+            //     console.log("NO SOCKET :(");
+            //     setTimeout(try_to_emit_func, 1000);
+            //   }
+            // };
+            trying_to_connect_uid = uid;
+            // setTimeout(try_to_emit_func, 1000);
+            
+          });
+        }
+        else if (!browser_socket) {
+           sys.puts("Received a new UID but socket is nil");
+        }
+      }
+    }); // end of http.get
+  }
 });
 
 
@@ -162,17 +184,18 @@ io.sockets.on('connection', function (socket) {
 
     // Set our global socket to it for later
     browser_socket = socket;
-    last_unclaimed_fob = 0;
+    if (trying_to_connect_uid) {
+      // Send over the uid!
+      browser_socket.emit('newuid', { uid: uid });
+      trying_to_connect_uid = null;
+    }
   }
 
-  // If we already have an unclaimed fob
-  // if (last_unclaimed_fob) {
-
-  //     // Send it over
-  //     socket.emit('uid', { uid: last_unclaimed_fob });
-
-  //       sys.puts("Sent the uid");
-  // }
+  socket.on('disconnect', function () {
+    console.log("We are disconnect.");
+    connected_to_browser = false;
+    browser_socket = null;
+  });
 });
 
 server.listen(8080);
