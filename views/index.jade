@@ -18,14 +18,14 @@ html(lang='en')
     - else
       h2 You don't have a taggr associated with your account. Please Tap a taggr to activate it.
     br
-    h1
+    div(id='connect_tag_div')
       - if(uids.length)
         a(id='connect_tag')
       - else
-        a(id='connect_tag') Tap a Taggr
-
+        h1
+          a(id='connect_tag') Tap a Taggr
     - if (uids.length)
-      h3 Already Used Keys:
+      h3 Activated Keys:
       ul(id='uids')
         - uids.forEach(function(uid){
           li
