@@ -166,7 +166,7 @@ app.get('/try_check_in/:uid', function(req, res) {
   console.log("THE UID WE ARE TYING TO FIND IS:" + uid);
   db.open(function(err, db) {
     db.collection('uids', function(err, collection) {
-      collection.find({'uid':uid}, function(err, cursor) {
+      collection.find({ uid : uid }, function(err, cursor) {
         var alreadyStored = false;
         cursor.each(function(err, item) {
           if(item != null) {
