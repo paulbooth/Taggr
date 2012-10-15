@@ -6,6 +6,8 @@ html(lang='en')
     script(src='http://localhost:8080/socket.io/socket.io.js')
     script(src='jquery.js')
     - var activated = (uids.length > 0)
+    script
+      var activated = #{activated};
     script(src='taggr-client.js')
     link(rel='stylesheet', href='/default.css')
   body
