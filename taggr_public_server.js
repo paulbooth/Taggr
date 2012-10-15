@@ -129,94 +129,12 @@ app.get('/taggr', function(req, res) {
     res.redirect('/'); // Start the auth flow
     return;
   }
-  var locals = {name: req.session.user.name, verified: check_verified(req.session.user.id)}
-  console.log("user:")
-  console.log(JSON.stringify(req.session.user, undefined, 2));
-  console.log(req.session.access_token);
+  var locals = {name: req.session.user.name}
+  // console.log("user:")
+  // console.log(JSON.stringify(req.session.user, undefined, 2));
+  // console.log(req.session.access_token);
   res.render('index.jade', locals);
   //res.send("CHATTING IT UP, " + my_user.name + ", with: <ul><li>" + ONLINE.join('</li><li>') + '</li></ul>');
-});
-
-
-// checks to see if a fbid is stored already
-function check_verified(fbid) {
-  for (var i = 0; i < verified_users.length; i++) {
-    if (verified_users[i].user.id == fbid) {
-      return true;
-    }
-  }
-  return false;
-}
-
-// stores the info of the current person as a verified user
-app.post('/store_info', function (req, res) {
-  console.log("STORING INFO:" + req.session.user.name);
-  if (!req.session.access_token) {
-    console.log("NO ACCESS TOKEN AT store_info.")
-    res.redirect('/'); // Start the auth flow
-    return;
-  }
-  verified_users.push({user: req.session.user,  access_token:req.session.access_token});
-  res.redirect('/');
-});
-
-// removes the info of the current person as a verified user
-app.post('/remove_info', function (req, res) {
-  console.log("Removing INFO:" + req.session.user.name);
-  if (!req.session.access_token) {
-    console.log("NO ACCESS TOKEN AT store_info.")
-    res.redirect('/'); // Start the auth flow
-    return;
-  }
-  for (var i = 0; i < verified_users.length; i++) {
-    if (verified_users[i].user.id == req.session.user.id) {
-      //verified_users.splice(i,1);
-      // if we splice, it will mess up everybody's stuff.
-      // we should set this to null, check for null everywhere
-      // and have a server-side endpoint for cycling the laptop vid
-      i--;
-    }
-  }
-  res.redirect('/');
-});
-
-// gets infor on the the next user object for the given current vid
-app.get('/next/:vid', function(req, res) {
-  vid = parseInt(req.params.vid);
-  nvid = vid + 1;
-  if (verified_users.length > 0) {
-    while (verified_users[nvid] == null) {
-      nvid++;
-      if (nvid > verified_users.length) {
-        nvid = 0;
-      }
-      if (nvid == vid) {
-        // no users found. :(
-        if (verified_users[vid]) {
-          break;
-        }
-        res.send(JSON.stringify({vid: 0, user: null}));
-        return;
-      }
-    }
-    res.send(JSON.stringify({ user:verified_users[nvid].user, vid: nvid }));
-  } else {
-    res.send(JSON.stringify({vid: 0, user: null}));
-  }
-});
-
-// gets the number of verified users
-app.get('/numverified', function(req, res) {
-  res.send(JSON.stringify(verified_users.length));
-});
-
-// url to get a specific room
-// each room is an open graph object page
-// /room?room_name=Suite400
-app.get('/room/:room_name', function(req, res) {
-  var room_name = req.params.room_name;
-  var room_image = req.query["room_image"] || 'http://www.classcarpetny.com/wp-content/uploads/2012/03/room.jpg';
-  res.render('room.jade', {room_name: room_name, room_image: room_image});
 });
 
 app.get('/uids', function(req, res) {
