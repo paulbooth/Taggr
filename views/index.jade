@@ -8,7 +8,14 @@ html(lang='en')
     script(src='taggr-client.js')
   body
     h1 Get ready to tag, #{name}!
+    - if(uids.length)
+    h2 You've already activated. Tap to tag this spot.
+    - else
+    h2 You don't have a taggr associated with your account. Please Tap your taggr to activate it.
+    br
+    br
     a(href='/logout') Logout
+    br
     a(id='connect_tag') Tap a Keychain
 
     - if (uids.length)
