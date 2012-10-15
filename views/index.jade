@@ -18,13 +18,13 @@ html(lang='en')
       a(href='/logout') Logout
     - if(uids.length)
       h2 You have an active taggr. Tag in!
+      a(id='remove_tag', href='/clear_user') Remove activated Taggr
     - else
       h2 You don't have a taggr associated with your account. Please Tap a taggr to activate it.
     br
     div(id='connect_tag_div')
       - if(uids.length)
         a(id='connect_tag')
-        a(id='remove_tag', href='/clear_user') Remove activated Taggr
       - else
         h1
           a(id='connect_tag') Tap a Taggr
