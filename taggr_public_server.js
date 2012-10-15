@@ -134,6 +134,10 @@ app.get('/taggr', function(req, res) {
     return;
   }
   var locals = {name: req.session.user.name}
+  getUidsForAccessToken(req.session.access_token, function(uids) {
+    locals.uids = JSON.parse(uids);
+    res.render('index.jade', locals);
+  })
   // console.log("user:")
   // console.log(JSON.stringify(req.session.user, undefined, 2));
   // console.log(req.session.access_token);
@@ -165,6 +169,7 @@ app.get('/uids', function(req, res) {
 });
 
 
+// Will post to facebook if linked (return 200). Otherwise, returns a 205.
 app.get('/try_check_in/:uid/:spot_name', function(req, res) {
   var uid = decodeURIComponent(req.params.uid);
   var spot_name = decodeURIComponent(req.params.spot_name);
@@ -194,6 +199,36 @@ app.get('/try_check_in/:uid/:spot_name', function(req, res) {
     });
   });
 });
+
+// returns array of ids hooked up to your access token
+// should only ever have one...
+app.get('/get_ids/:access_token', function(req, res) {
+  var access_token = decodeURIComponent(req.params.access_token);
+  getUidsForAccessToken(access_token, function(matched) { res.end(matched);})
+});
+
+function getUidsForAccessToken(access_token, callback) {
+  db.open(function(err, db) {
+    db.collection('uids', function(err, collection) {
+      // console.log("going to try to find it now");
+      collection.find({ access_token : access_token }, function(err, cursor) {
+        var matched = []
+        cursor.each(function(err, item) {
+          if(item != null) {
+            console.dir(item);
+            //console.log("created at " + new Date(item._id.generationTime) + "\n")
+            matched.push(item);
+          }
+          // Null signifies end of iterator
+          if(item == null) {
+            db.close();
+            callback(JSON.stringify(matched));
+          }
+        });
+      });          
+    });
+  });
+}
 
 // call this to set a pairing in the database between the fob :uid
 // and the facebook req.session.access_token
