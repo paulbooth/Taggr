@@ -197,7 +197,7 @@ app.get('/clear_user', function(req, res) {
   // Clear their access token from the db
   disassociateUserFromTaggr(req.session.access_token, function() {
     // Refresh the page
-    res.redirect('/');
+    res.redirect('/login');
   });
 });
 

@@ -15,13 +15,13 @@ html(lang='en')
     div(id='spot_name_div')
       h1(id='spot_name') Trying to connect to local spot...
     div(id='spot_image_div')
-    div Get ready to tag, #{name}!  
+    div Logged in as #{name}!  
       a(href='/logout') Logout
     - if(uids.length)
-      h2 You have an active taggr. Tag in!
+      h2 You already have an active taggr. Why don't you tag in!
       a(id='remove_tag', href='/clear_user') Remove activated Taggr
     - else
-      h2 You don't have a taggr associated with your account. Please Tap a taggr to activate it.
+      h2 You don't have a taggr associated with your account. Tap a taggr to activate it.
     br
     div(id='connect_tag_div')
       - if(uids.length)
@@ -30,7 +30,7 @@ html(lang='en')
         h1
           a(id='connect_tag') Tap a Taggr
     - if (uids.length)
-      h3 Activated Keys:
+      h3 Activated Taggr Keys:
       ul(id='uids')
         - uids.forEach(function(uid){
           li

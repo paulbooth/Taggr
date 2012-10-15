@@ -11,7 +11,7 @@
     } else {
 	    $('#connect_tag')
 	    	.attr('href', "http://thepaulbooth.com:3727/newuid/" + data.uid)
-	    	.text("Click to activate ID #" + data.uid);
+	    	.text("Confirm activate ID #" + data.uid);
 	}
   });
 
