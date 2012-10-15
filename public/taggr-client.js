@@ -4,9 +4,15 @@
     console.log("Received a UID! It's " + data.uid);
 
     // $.post("http://thepaulbooth.com:3727/newuid/" + data.uid);
-    $('#connect_tag')
-    	.attr('href', "http://thepaulbooth.com:3727/newuid/" + data.uid)
-    	.text("Click to activate ID #" + data.uid);
+    if (activated) {
+    	$('#connect_tag')
+	    	.attr('href', "http://thepaulbooth.com:3727/newuid/" + data.uid)
+	    	.text("Click to switch to ID #" + data.uid);
+    } else {
+	    $('#connect_tag')
+	    	.attr('href', "http://thepaulbooth.com:3727/newuid/" + data.uid)
+	    	.text("Click to activate ID #" + data.uid);
+	}
   });
 
   browser_socket.on('config', function(data) {
