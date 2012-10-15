@@ -9,8 +9,4 @@ html(lang='en')
   body
     h1 Get ready to tag, #{name}!
     a(id='connect_tag') Tap a Keychain
-    ul(id='uids')
-      - uids.forEach(function(uid){
-        li
-          #{uid}
-      - })
+    #{uids}
