@@ -298,11 +298,12 @@ app.get('/newuid/:uid', function(req, res) {
 app.get('/spot/:spot_name', function(req, res) {
   var spot_name = req.params.spot_name;
   var spot_image = req.query["spot_image"] || 'http://sphotos-a.xx.fbcdn.net/hphotos-ash4/923_10151300013260676_847787992_n.jpg';
+  console.log("RENDER with " + spot_image);
   res.render('spot.jade', {spot_name: spot_name, spot_image: spot_image});
 });
 
 function openGraphTagSpot(access_token, spot_name, spot_image) {
-  console.log("Tagging user with access token " + access_token + " at location " + spot_name);
+  console.log("Tagging user with access token " + access_token + " at location " + spot_name + " with image:" + spot_image);
   var spot_url = 'http://thepaulbooth.com:3727/spot/' + spot_name + (spot_image ? ("?spot_image=" + spot_image) : "")
   openGraph.publish('me',access_token,'tag', 'spot', spot_url, function(err,response){
     console.log(response);
