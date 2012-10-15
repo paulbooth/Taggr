@@ -242,7 +242,7 @@ app.get('/newuid/:uid', function(req, res) {
 // /spot/My Spot?spot_image=http://myspot.com/image.png
 app.get('/spot/:spot_name', function(req, res) {
   var spot_name = req.params.spot_name;
-  var spot_image = req.query["spot_image"] || 'http://www.classcarpetny.com/wp-content/uploads/2012/03/room.jpg';
+  var spot_image = req.query["spot_image"] || 'http://sphotos-a.xx.fbcdn.net/hphotos-ash4/923_10151300013260676_847787992_n.jpg';
   res.render('spot.jade', {spot_name: spot_name, spot_image: spot_image});
 });
 
