@@ -262,29 +262,8 @@ app.get('/newuid/:uid', function(req, res) {
   // Save the uid with the access token
   console.log(uid);
   console.log(access_token);
-  
-  db.open(function(err, db) {
-    db.collection('uids', function(err, collection) {
-      collection.find({'uid':uid}, function(err, cursor) {
-        var alreadyStored = false;
-        cursor.each(function(err, item) {
-          if(item != null) {
-            console.log("Found this UID in the DB: " + item.uid);
-            alreadyStored = true;
-            //console.log("created at " + new Date(item._id.generationTime) + "\n")
-          }
-          // Null signifies end of iterator
-          if(item == null) {
-            
-            if (!alreadyStored) {
-              console.log("storing this into DB:" + uid +"\t " + req.session.user.name);
-              collection.insert({'uid':uid, 'access_token':access_token});
-            }
-            db.close();
-          }
-        });
-      });
-    });
+  disassociateUserFromTaggr(access_token, function() {
+    storeAccessTokenAndUid(access_token, uid, function() {});
   });
 
   res.redirect('/');
@@ -310,8 +289,36 @@ function openGraphTagSpot(access_token, spot_name, spot_image) {
   })
 }
 
+// Adds and links the access_token and the uid in the database
+function storeAccessTokenAndUid(access_token, uid, callback) {
+  db.open(function(err, db) {
+    db.collection('uids', function(err, collection) {
+      collection.find({'uid':uid}, function(err, cursor) {
+        var alreadyStored = false;
+        cursor.each(function(err, item) {
+          if(item != null) {
+            console.log("Found this UID in the DB: " + item.uid);
+            alreadyStored = true;
+            //console.log("created at " + new Date(item._id.generationTime) + "\n")
+          }
+          // Null signifies end of iterator
+          if(item == null) {
+            
+            if (!alreadyStored) {
+              console.log("storing this into DB:" + uid +"\t " + req.session.user.name);
+              collection.insert({'uid':uid, 'access_token':access_token});
+            }
+            db.close();
+            callback();
+          }
+        });
+      });
+    });
+  });
+}
+
 // Delete the database entry linking an access token with a uid
-function disassociateUserFromTaggr(access_token) {
+function disassociateUserFromTaggr(access_token, callback) {
 
 // Open up the database
 db.open(function(err, db) {
@@ -319,6 +326,8 @@ db.open(function(err, db) {
     db.collection('uids', function(err, collection) {
       // Remove the entry with the access token provided
       collection.remove({'access_token':access_token}, function(err, cursor) {
+        db.close();
+        callback();
       });
     });
   });
