@@ -6,11 +6,11 @@ html(lang='en')
     script(src='http://localhost:8080/socket.io/socket.io.js')
     script(src='jquery.js')
     script(src='taggr-client.js')
+    link(rel='stylesheet', href='/default.css')
   body
-    div
+    div(id='spot_name_div')
       h1(id='spot_name') Trying to connect to local spot...
-    div
-      div(id="image_div")
+    div(id="image_div")
     h1 Get ready to tag, #{name}!
     - if(uids.length)
       h2 You have an active taggr.
