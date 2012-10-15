@@ -250,7 +250,7 @@ function openGraphTagSpot(access_token, spot_name) {
   console.log("Tagging user with access token " + access_token + " at location " + spot_name);
 
   var post_data = querystring.stringify({
-    spot: "http://thepaulbooth.com:3727/spot/" + spot_name //+ '?spot_image='+spot_image,
+    spot: "http://thepaulbooth.com:3727/spot/" + spot_name, //+ '?spot_image='+spot_image,
     access_token: access_token
   });
 
