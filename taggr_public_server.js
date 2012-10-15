@@ -7,7 +7,7 @@ var apiKey = '162309810576217';
 var secretKey = 'cfcce3d3e6a2cec6bae74c90b9ca3387';
 
 var argv = process.argv;
-var https = require('https');
+var https = require('https'), http = require('http');
 var querystring = require('querystring');
 
 var hostUrl = 'http://thepaulbooth.com:3727';
@@ -133,13 +133,17 @@ app.get('/taggr', function(req, res) {
     res.redirect('/'); // Start the auth flow
     return;
   }
-  var locals = {name: req.session.user.name}
-  getUidsForAccessToken(req.session.access_token, function(uids) {
-    locals.uids = JSON.parse(uids);
-    console.log("LOCALS HEREREERERERE:");
-    console.log(locals);
-    res.render('index.jade', locals);
+
+  getLocalConfig(function(config) {
+    var locals = {name: req.session.user.name, spot_name: config.spot_name}
+    getUidsForAccessToken(req.session.access_token, function(uids) {
+      locals.uids = JSON.parse(uids);
+      console.log("LOCALS HEREREERERERE:");
+      console.log(locals);
+      res.render('index.jade', locals);
+    })
   })
+  
   // console.log("user:")
   // console.log(JSON.stringify(req.session.user, undefined, 2));
   // console.log(req.session.access_token);
@@ -304,6 +308,29 @@ function openGraphTagSpot(access_token, spot_name) {
     console.log(response);
   })
 }
+
+function getLocalConfig(callback) {
+  var options = {
+    host: 'localhost',
+    port: 8080,
+    path: '/config'
+  };
+
+  http.get(options, function(res) {
+    var output = '';
+    res.on('data', function (chunk) {
+        output += chunk;
+    });
+
+    res.on('end', function() {
+      var config = JSON.parse(output);
+      callback(config);
+    });
+  }).on('error', function(e) {
+    console.log('Config ERROR: ' + e.message);
+    callback({});
+  });
+} 
 
 console.log("starting server");
 app.listen(3727);

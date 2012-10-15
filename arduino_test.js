@@ -22,17 +22,12 @@ var io = require('socket.io').listen(server);
 var fs = require('fs');
 
 // Going to set a trim function for our strings
-
 if(typeof(String.prototype.trim) === "undefined") {
    String.prototype.trim = function() 
    {
        return String(this).replace(/^\s+|\s+$/g, '');
    };
 }
-
-
-
-
 
 // for command line things
 var childProcess = require('child_process');
@@ -46,6 +41,11 @@ app.get('/', function(req, res){
        res.send(text);
    });
 });
+
+// endpoint to get our config object
+app.get('/config', function(req, res) {
+  res.send(JSON.stringify(config));
+})
 
 
 serialPort.on("data", function (data) {
