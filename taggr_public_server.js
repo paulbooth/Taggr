@@ -188,6 +188,7 @@ app.get('/logout', function(req, res) {
 app.get('/try_check_in/:uid/:spot_name', function(req, res) {
   var uid = decodeURIComponent(req.params.uid);
   var spot_name = decodeURIComponent(req.params.spot_name);
+  var spot_image = decodeURIComponent(req['spot_image']);
   // console.log("before");
   // console.log("THE UID WE ARE TYING TO FIND IS:" + uid + ":" + uid.length);
   // console.log("after");
@@ -201,7 +202,7 @@ app.get('/try_check_in/:uid/:spot_name', function(req, res) {
             console.dir(item);
             //console.log("created at " + new Date(item._id.generationTime) + "\n")
             alreadyStored = true;
-            openGraphTagSpot(item.access_token, spot_name)
+            openGraphTagSpot(item.access_token, spot_name, spot_image)
           }
           // Null signifies end of iterator
           if(item == null) {
@@ -300,9 +301,10 @@ app.get('/spot/:spot_name', function(req, res) {
   res.render('spot.jade', {spot_name: spot_name, spot_image: spot_image});
 });
 
-function openGraphTagSpot(access_token, spot_name) {
+function openGraphTagSpot(access_token, spot_name, spot_image) {
   console.log("Tagging user with access token " + access_token + " at location " + spot_name);
-  openGraph.publish('me',access_token,'tag', 'spot', 'http://thepaulbooth.com:3727/spot/' + spot_name, function(err,response){
+  var spot_url = 'http://thepaulbooth.com:3727/spot/' + spot_name + (spot_image ? ("?spot_image=" + spot_image) : "")
+  openGraph.publish('me',access_token,'tag', 'spot', spot_url, function(err,response){
     console.log(response);
   })
 }

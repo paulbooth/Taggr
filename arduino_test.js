@@ -63,7 +63,7 @@ serialPort.on("data", function (data) {
     var options = {
       host: 'thepaulbooth.com',
       port: 3727,
-      path: '/try_check_in/' + encodeURIComponent(uid) + "/" + encodeURIComponent(config.spot_name)
+      path: '/try_check_in/' + encodeURIComponent(uid) + "/" + encodeURIComponent(config.spot_name) + "?spot_image=" + encodeURIComponent(config.spot_image)
     };
     console.log("making request to /try_check_in/" + encodeURIComponent(uid) + "/" + encodeURIComponent(config.spot_name))
     http.get(options, function(res) {
