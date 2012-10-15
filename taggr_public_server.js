@@ -143,7 +143,7 @@ app.get('/taggr', function(req, res) {
   // console.log("user:")
   // console.log(JSON.stringify(req.session.user, undefined, 2));
   // console.log(req.session.access_token);
-  res.render('index.jade', locals);
+  //res.render('index.jade', locals);
   //res.send("CHATTING IT UP, " + my_user.name + ", with: <ul><li>" + ONLINE.join('</li><li>') + '</li></ul>');
 });
 
