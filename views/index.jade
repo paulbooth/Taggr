@@ -10,9 +10,9 @@ html(lang='en')
     h1(id='spot_name') Trying to connect to local spot...
     h1 Get ready to tag, #{name}!
     - if(uids.length)
-    h2 You've already activated. Tap to tag this spot.
+      h2 You've already activated. Tap to tag this spot.
     - else
-    h2 You don't have a taggr associated with your account. Please Tap your taggr to activate it.
+      h2 You don't have a taggr associated with your account. Please Tap your taggr to activate it.
     br
     br
     a(href='/logout') Logout
@@ -20,9 +20,9 @@ html(lang='en')
     a(id='connect_tag') Tap a Keychain
 
     - if (uids.length)
-    h3 Already Used Keys:
-    ul(id='uids')
-      - uids.forEach(function(uid){
-        li
-          #{uid.uid}
-      - })
+      h3 Already Used Keys:
+      ul(id='uids')
+        - uids.forEach(function(uid){
+          li
+            #{uid.uid}
+        - })
