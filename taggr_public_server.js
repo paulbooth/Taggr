@@ -317,6 +317,25 @@ function storeAccessTokenAndUid(access_token, uid, callback) {
   });
 }
 
+function fetchUserFromDatabaseWithUID(uid, callback) {
+  db.open(function(err, db) {
+    db.collection('uids', function(err, collection) {
+      collection.find({'uid':uid}, function(err, cursor) {
+        cursor.each(function(err, item) {
+          if(item != null) {
+            console.log("Found this UID in the DB: " + item.uid);
+            callback(item);
+          }
+          if (item == null) {
+            db.close();
+            callback(null);
+          }
+        });
+      });
+    });
+  });
+}
+
 // Delete the database entry linking an access token with a uid
 function disassociateUserFromTaggr(access_token, callback) {
 
