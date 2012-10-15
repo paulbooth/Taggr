@@ -310,6 +310,20 @@ function openGraphTagSpot(access_token, spot_name, spot_image) {
   })
 }
 
+// Delete the database entry linking an access token with a uid
+function disassociateUserFromTaggr(access_token) {
+
+// Open up the database
+db.open(function(err, db) {
+  // Grab the uid collection
+    db.collection('uids', function(err, collection) {
+      // Remove the entry with the access token provided
+      collection.remove({'access_token':access_token}, function(err, cursor) {
+      });
+    });
+  });
+
+}
 console.log("starting server");
 app.listen(3727);
 console.log("that was cool");
