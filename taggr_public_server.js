@@ -305,7 +305,7 @@ function storeAccessTokenAndUid(access_token, uid, callback) {
           if(item == null) {
             
             if (!alreadyStored) {
-              console.log("storing this into DB:" + uid +"\t " + req.session.user.name);
+              console.log("storing this into DB:" + uid +"\t " + access_token);
               collection.insert({'uid':uid, 'access_token':access_token});
             }
             db.close();
