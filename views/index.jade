@@ -11,14 +11,15 @@ html(lang='en')
     div(id='spot_name_div')
       h1(id='spot_name') Trying to connect to local spot...
     div(id='spot_image_div')
-    div Get ready to tag, #{name}! 
+    div Get ready to tag, #{name}!
       a(href='/logout') Logout
     - if(uids.length)
-      h2 You have an active taggr.
+      div You have an active taggr. Get to taggin'!
     - else
-      h2 You don't have a taggr associated with your account. Please Tap your taggr to activate it.
+      h2 You don't have a taggr associated with your account. Please Tap a taggr to activate it.
     br
-    a(id='connect_tag') Tap a Keychain
+    h1
+      a(id='connect_tag') Tap a Taggr
 
     - if (uids.length)
       h3 Already Used Keys:
