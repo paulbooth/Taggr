@@ -162,8 +162,8 @@ app.get('/uids', function(req, res) {
 
 
 app.get('/try_check_in/:uid', function(req, res) {
-  var uid = req.params.uid;
-  console.log("THE UID WE ARE TYING TO FIND IS:" + uid);
+  var uid = decodeURIComponent(req.params.uid);
+  console.log("THE UID WE ARE TYING TO FIND IS:" + uid + ":" + uid.length);
   db.open(function(err, db) {
     db.collection('uids', function(err, collection) {
       console.log("going to try to find it now");
