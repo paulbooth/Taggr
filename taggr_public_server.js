@@ -285,9 +285,19 @@ app.get('/newuid/:uid', function(req, res) {
     storeAccessTokenAndUid(access_token, uid, function() {});
   });
 
-  res.redirect('/');
+  res.redirect('/connected');
 
 });
+
+app.get('/connected', function(req, res) {
+  if (!req.session || !req.session.access_token) {
+    console.log("NO ACCESS TOKEN FOR new uid.")
+    res.redirect('/'); // Start the auth flow
+    return;
+  }
+  var locals = {name: req.session.user.name};
+  res.render('connected.jade', locals);
+})
 
 // url to get a specific spot
 // each spot is an open graph object page
