@@ -19,6 +19,7 @@ html(lang='en')
       a(href='/logout') Logout
     - if(uids.length)
       h2 You already have an active taggr. Why don't you tag in!
+      p Lost your taggr somewhere? 
       a(id='remove_tag', href='/clear_user') Remove activated Taggr
     - else
       h2 You don't have a taggr associated with your account. Tap a taggr to activate it.
