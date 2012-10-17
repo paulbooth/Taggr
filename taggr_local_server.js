@@ -3,8 +3,8 @@ var config = require('./config')
 var serialport = require("serialport");
 var SerialPort = serialport.SerialPort;
 var sys = require('sys');
-var arduino_port = "/dev/tty.usbmodemfd121";
-// var arduino_port = "/dev/tty.usbmodem1421";
+// var arduino_port = "/dev/tty.usbmodemfd121";
+var arduino_port = "/dev/tty.usbmodem1421";
 var serialPort = new SerialPort(arduino_port, { 
     parser: serialport.parsers.readline("\n") 
   });
@@ -15,8 +15,8 @@ var connected_to_browser;
 var browser_socket;
 var trying_to_connect_uid = null; // the fob id that we are trying to connect to
 var last_uid_to_connect = null;
-var repeat_delay = 5000;
-var clear_interval;
+var clear_uid_delay = 5000; // amount of time until will allow tag in from same id
+var clear_timeout; // clear timeout object itself to allow reset of last tagged in
 var express = require('express'),
   app = express();
 var server = http.createServer(app);
@@ -181,11 +181,11 @@ function getCorrectSpeechCommand() {
 }
 
 function set_last_uid_to_connect(uid) {
-  if (clear_interval) {
-    clearInterval(clear_interval);
+  if (clear_timeout) {
+    clearTimeout(clear_timeout);
   }
   last_uid_to_connect = uid;
-  clear_interval = setInterval(clear_last_uid, repeat_delay);
+  clear_timeout = setTimeout(clear_last_uid, clear_uid_delay);
 }
 
 function clear_last_uid() {

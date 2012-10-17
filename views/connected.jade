@@ -6,11 +6,13 @@ html(lang='en')
     script(src='jquery.js')
     script(src='connected-client.js')
   body
-    h1 You are now connected to your Taggr, #{name}
+    h1 You are now connected to your Taggr, #{name}!
     div Taggr brings your online identity offline. Check-in to your favorite spots, stay in touch with new friends, and play new real-life games.
+    h1 Tap your new Taggr anytime to tag in!
     span
         h1
           p Logging out in 
             span(id='countdown') 5
 
     a(href='/logout')  Logout now
+    a(href='/taggr') Stay Logged In
