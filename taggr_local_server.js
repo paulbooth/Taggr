@@ -3,8 +3,8 @@ var config = require('./config')
 var serialport = require("serialport");
 var SerialPort = serialport.SerialPort;
 var sys = require('sys');
-// var arduino_port = "/dev/tty.usbmodemfd121";
-var arduino_port = "/dev/tty.usbmodem1421";
+var arduino_port = "/dev/tty.usbmodemfd121";
+// var arduino_port = "/dev/tty.usbmodem1421";
 var serialPort = new SerialPort(arduino_port, { 
     parser: serialport.parsers.readline("\n") 
   });
@@ -14,6 +14,9 @@ var http = require('http');
 var connected_to_browser;
 var browser_socket;
 var trying_to_connect_uid = null; // the fob id that we are trying to connect to
+var last_uid_to_connect = null;
+var repeat_delay = 5000;
+var clear_interval;
 var express = require('express'),
   app = express();
 var server = http.createServer(app);
@@ -60,6 +63,15 @@ serialPort.on("data", function (data) {
     // Grab the uid
     uid = data.substring(prefix.length).trim();
 
+    // If the last uid is still stored (it's stored for 1 seconds) 
+    // and the same uid is tagged, don't register it. This is just to
+    // prevent repeated taggings. 
+    if (uid == last_uid_to_connect) {
+      sys.puts("This is a repeat tag. NOT CREATING OG POST");
+      set_last_uid_to_connect(uid);
+      return;
+    }
+
     var options = {
       host: 'thepaulbooth.com',
       port: 3727,
@@ -77,6 +89,7 @@ serialPort.on("data", function (data) {
       if (res.statusCode == 200) {
         console.log("Okay, the response means already recognized and made OG post");
         announce_tag();
+        set_last_uid_to_connect(uid);
       } else if (res.statusCode == 205) {
         // if the fob ID is unrecognized in the DB
         // we must have a new fob that needs linked.
@@ -87,6 +100,8 @@ serialPort.on("data", function (data) {
           // Send over the uid!
           browser_socket.emit('newuid', { uid: uid });
 
+          set_last_uid_to_connect(uid);
+
           sys.puts("Sending over UID:" + uid + " okay?");
         }
 
@@ -94,24 +109,10 @@ serialPort.on("data", function (data) {
           sys.puts("Received a new UID but not connected to browser");
           browserCommand = getCorrectBrowserCommand();
           childProcess.exec(browserCommand + ' http://thepaulbooth.com:3727/login', function (error, stdout, stderr) {
-            // if (error) {
-            //   console.log(error.stack);
-            //   console.log('Error code: '+error.code);
-            //   console.log('Signal received: '+error.signal);
-            // }
-            console.log('Chrome done launching.');
-            // console.log('Child Process STDERR: '+stderr);
-            // var try_to_emit_func = function() {
-            //   if (browser_socket) {
-            //     browser_socket.emit('newuid', { uid: uid });
-            //     console.log("WOO SOCKET");
-            //   } else {
-            //     console.log("NO SOCKET :(");
-            //     setTimeout(try_to_emit_func, 1000);
-            //   }
-            // };
+
+            console.log('Browser done launching.');
+
             trying_to_connect_uid = uid;
-            // setTimeout(try_to_emit_func, 1000);
             
           });
         }
@@ -179,18 +180,22 @@ function getCorrectSpeechCommand() {
   }
 }
 
+function set_last_uid_to_connect(uid) {
+  if (clear_interval) {
+    clearInterval(clear_interval);
+  }
+  last_uid_to_connect = uid;
+  clear_interval = setInterval(clear_last_uid, repeat_delay);
+}
+
+function clear_last_uid() {
+    last_uid_to_connect = null;
+}
 
 function announce_tag() {
   var thing_to_say = "Tagged. " + config.spot_name;
   console.log("saying:" + thing_to_say);
   var say = childProcess.exec('echo "' + thing_to_say + '" | ' + getCorrectSpeechCommand(), function (error, stdout, stderr) {
-   // if (error) {
-   //   console.log(error.stack);
-   //   console.log('Error code: '+error.code);
-   //   console.log('Signal received: '+error.signal);
-   // }
-   // console.log('Child Process STDOUT: '+stdout);
-   // console.log('Child Process STDERR: '+stderr);
   });
 }
 
