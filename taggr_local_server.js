@@ -113,6 +113,7 @@ serialPort.on("data", function (data) {
             console.log('Browser done launching.');
 
             trying_to_connect_uid = uid;
+            set_last_uid_to_connect(uid);
             
           });
         }
