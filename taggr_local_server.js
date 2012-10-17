@@ -182,11 +182,13 @@ function getCorrectSpeechCommand() {
 }
 
 function set_last_uid_to_connect(uid) {
-  if (clear_timeout) {
-    clearTimeout(clear_timeout);
+  if (last_uid_to_connect != uid) {
+    if (clear_timeout) {
+      clearTimeout(clear_timeout);
+    }
+    clear_timeout = setTimeout(clear_last_uid, clear_uid_delay);
   }
   last_uid_to_connect = uid;
-  clear_timeout = setTimeout(clear_last_uid, clear_uid_delay);
 }
 
 function clear_last_uid() {
