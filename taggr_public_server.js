@@ -221,7 +221,7 @@ app.get('/try_check_in/:uid/:spot_name', function(req, res) {
             console.dir(item);
             //console.log("created at " + new Date(item._id.generationTime) + "\n")
             alreadyStored = true;
-            openGraphTagSpot(item.access_token, spot_name, spot_image)
+            makeOpenGraphRequest(item.access_token, spot_name, spot_image)
           }
           // Null signifies end of iterator
           if(item == null) {
@@ -310,7 +310,7 @@ app.get('/spot/:spot_name', function(req, res) {
   res.render('spot.jade', {spot_name: spot_name, spot_image: spot_image});
 });
 
-function openGraphTagSpot(access_token, spot_name, spot_image) {
+function makeOpenGraphRequest(access_token, spot_name, spot_image) {
   console.log("Tagging user with access token " + access_token + " at location " + spot_name + " with image:" + spot_image);
   var spot_url = 'http://thepaulbooth.com:3727/spot/' + spot_name + (spot_image ? ("?spot_image=" + spot_image) : "")
   openGraph.publish('me',access_token,'tag', 'spot', spot_url, function(err,response){
