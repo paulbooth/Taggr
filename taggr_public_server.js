@@ -40,7 +40,14 @@ app.use(express.static(__dirname + '/public'));
 
 app.get('/', function(req, res) {
   res.render('index.jade');
-})
+});
+
+// Electric imp endpoint
+app.post('/eimp', function(req, res) {
+  console.log("EIMP POST!!!!");
+
+  console.log(req.params);
+});
 
 // First part of Facebook auth dance
 app.get('/login', function(req, res){
