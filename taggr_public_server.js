@@ -52,7 +52,7 @@ function tryOgPost(uid, config, callback) {
   var target_path = '/try_check_in/' + encodeURIComponent(uid) + "/" + encodeURIComponent(config.spot_name) + "?spot_image=" + encodeURIComponent(config.spot_image);
 
   var options = {
-      host: 'http://thepaulbooth.com',
+      host: 'thepaulbooth.com',
       port: 3727,
       path: target_path
     };
@@ -72,7 +72,7 @@ function tryOgPost(uid, config, callback) {
       });
     }).on('error', function(e) {
       console.log('OG http get ERROR: ' + e.message);
-      console.log(redirect_path);
+      console.log(target_path);
       console.log(JSON.stringify(e, undefined, 2))
       callback();
     });
