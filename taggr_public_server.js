@@ -46,7 +46,7 @@ app.get('/', function(req, res) {
 app.post('/eimp', function(req, res) {
   console.log("EIMP POST!!!!");
 
-  console.log(req.params);
+  console.log(req.body);
   res.end();
 });
 
