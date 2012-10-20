@@ -45,9 +45,17 @@ app.get('/', function(req, res) {
 // Electric imp endpoint
 app.post('/eimp', function(req, res) {
   console.log("EIMP POST!!!!");
+  var body = '';
+  req.on('data', function (data) {
+      body += data;
+  });
+  req.on('end', function () {
 
-  console.log(JSON.stringify(req, undefined, 2));
-  res.end();
+      var POST = querystring.parse(body);
+      // use POST
+      console.log(POST);
+      res.end();
+  });
 });
 
 // First part of Facebook auth dance
