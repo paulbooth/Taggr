@@ -63,6 +63,7 @@ app.post('/eimp', function(req, res) {
       var config = getSpotInfoFromReaderId(readerId);
       // use POST
       console.log(POST);
+      console.log("trying redirect");
       res.redirect('/try_check_in/' + encodeURIComponent(uid) + "/" + encodeURIComponent(config.spot_name) + "?spot_image=" + encodeURIComponent(config.spot_image))
   });
 });
