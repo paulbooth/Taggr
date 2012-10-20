@@ -36,6 +36,10 @@
 #include <Wire.h>
 #include <Adafruit_NFCShield_I2C.h>
 
+#include <SoftwareSerial.h>
+
+SoftwareSerial impSerial(8, 9); // RX on 8, TX on 9
+
 #define IRQ   (2)
 #define RESET (3)  // Not connected by default on the NFC Shield
 
@@ -44,6 +48,8 @@ Adafruit_NFCShield_I2C nfc(IRQ, RESET);
 void setup(void) {
   Serial.begin(9600);
   Serial.println("Hello!");
+  // set the data rate for the SoftwareSerial port
+  impSerial.begin(19200);
 
   nfc.begin();
 
@@ -82,6 +88,9 @@ void loop(void) {
     Serial.print("  UID Length: ");Serial.print(uidLength, DEC);Serial.println(" bytes");
     Serial.print("  UID Value: ");
     nfc.PrintHex(uid, uidLength);
+    impSerial.write("$");
+    writeHexToImp(uid, uidLength);
+    impSerial.write("#");
     Serial.println("");
     
     if (uidLength == 4)
@@ -184,4 +193,22 @@ void printHexPlain(const byte * data, const uint32_t numBytes)
       Serial.print((char)data[szPos]);
   }
   Serial.println("");
+}
+
+void writeHexToImp(const byte * data, const uint32_t numBytes)
+{
+  uint32_t szPos;
+  for (szPos=0; szPos < numBytes; szPos++) 
+  {
+    impSerial.print("0x");
+    // Append leading 0 for small values
+    if (data[szPos] <= 0xF)
+      impSerial.print("0");
+    impSerial.print(data[szPos], HEX);
+    if ((numBytes > 1) && (szPos != numBytes - 1))
+    {
+      impSerial.print(" ");
+    }
+  }
+//  Serial.println("");
 }

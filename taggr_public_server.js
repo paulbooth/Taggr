@@ -42,6 +42,11 @@ app.get('/', function(req, res) {
   res.render('index.jade');
 });
 
+// stub method. Eventually store this info in Mongo
+function getSpotInfoFromReaderId(readerId) {
+  return {spot_name:"FB SCOPE Room", spot_image:'http://sphotos-b.xx.fbcdn.net/hphotos-prn1/156221_109747199180823_827669867_n.jpg'};
+}
+
 // Electric imp endpoint
 app.post('/eimp', function(req, res) {
   console.log("EIMP POST!!!!");
@@ -53,9 +58,12 @@ app.post('/eimp', function(req, res) {
   req.on('end', function () {
       console.log("EIMP REQUEST END");
       var POST = querystring.parse(body);
+      var uid = POST.value;
+      var readerId = POST.target;
+      var config = getSpotInfoFromReaderId(readerId);
       // use POST
       console.log(POST);
-      res.end();
+      res.redirect('/try_check_in/' + encodeURIComponent(uid) + "/" + encodeURIComponent(config.spot_name) + "?spot_image=" + encodeURIComponent(config.spot_image))
   });
 });
 
