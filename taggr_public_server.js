@@ -47,6 +47,7 @@ app.post('/eimp', function(req, res) {
   console.log("EIMP POST!!!!");
 
   console.log(req.params);
+  res.end();
 });
 
 // First part of Facebook auth dance
