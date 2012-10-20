@@ -47,6 +47,37 @@ function getSpotInfoFromReaderId(readerId) {
   return {spot_name:"FB SCOPE Room", spot_image:'http://sphotos-b.xx.fbcdn.net/hphotos-prn1/156221_109747199180823_827669867_n.jpg'};
 }
 
+// tries to check in with the uid and spot config info (spot_name, image, etc)
+function tryOgPost(uid, config, callback) {
+  var target_path = '/try_check_in/' + encodeURIComponent(uid) + "/" + encodeURIComponent(config.spot_name) + "?spot_image=" + encodeURIComponent(config.spot_image);
+
+  var options = {
+      host: 'http://thepaulbooth.com',
+      port: 3727,
+      path: target_path
+    };
+
+    http.get(options, function(result) {
+      // console.log('STATUS: ' + result.statusCode);
+      // console.log('HEADERS: ' + JSON.stringify(result.headers));
+      var output = '';
+      result.on('data', function (chunk) {
+          output += chunk;
+      });
+
+      result.on('end', function() {
+        console.log("Post done making:");
+        console.log(output);
+        callback(output);
+      });
+    }).on('error', function(e) {
+      console.log('OG http get ERROR: ' + e.message);
+      console.log(redirect_path);
+      console.log(JSON.stringify(e, undefined, 2))
+      callback();
+    });
+}
+
 // Electric imp endpoint
 app.post('/eimp', function(req, res) {
   console.log("EIMP POST!!!!");
@@ -63,8 +94,11 @@ app.post('/eimp', function(req, res) {
       var config = getSpotInfoFromReaderId(readerId);
       // use POST
       console.log(POST);
-      console.log("trying redirect");
-      res.redirect('/try_check_in/' + encodeURIComponent(uid) + "/" + encodeURIComponent(config.spot_name) + "?spot_image=" + encodeURIComponent(config.spot_image))
+      console.log("trying post");
+      tryOgPost(uid, config, function(output) {
+        res.end();
+      });
+      //res.redirect('/try_check_in/' + encodeURIComponent(uid) + "/" + encodeURIComponent(config.spot_name) + "?spot_image=" + encodeURIComponent(config.spot_image))
   });
 });
 
