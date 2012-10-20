@@ -48,9 +48,10 @@ app.post('/eimp', function(req, res) {
   var body = '';
   req.on('data', function (data) {
       body += data;
+      console.log("EIMP data:" + data);
   });
   req.on('end', function () {
-
+      console.log("EIMP REQUEST END");
       var POST = querystring.parse(body);
       // use POST
       console.log(POST);
