@@ -6,7 +6,7 @@ var argv = process.argv; // I don't think this is needed anymore
 var https = require('https'), http = require('http');
 var querystring = require('querystring');
 
-var port = process.env.PORT || 5000;
+var port = process.env.PORT || 3000;
 var hostUrl = 'http://lifegraph.herokuapp.com:' + port;
 
 var express = require('express'),
@@ -16,7 +16,11 @@ var express = require('express'),
 var OpenGraph = require('facebook-open-graph'),
     openGraph = new OpenGraph('fbtaggr');
 
+// Database
 var mongo = require('mongodb');
+var db;
+var MONGO_URI = process.env.MONGOLAB_URI || 'mongodb://localhost:27017/lifegraph';
+
 
 var verified_users = [];
 // For cookies! So each person who connects is not all the same person
@@ -415,26 +419,13 @@ function disassociateUserFromTaggr(access_token, callback) {
     });
   });
 }
-<<<<<<< HEAD
-console.log("starting server. " + hostUrl);
-app.listen(port);
-console.log("that was cool");
-=======
-
-// Database
-
-var db;
-var MONGO_URI = process.env.MONGOLAB_URI || 'mongodb://localhost:27017/lifegraph';
 
 // Open up the database
 console.log("Connecting to", MONGO_URI);
 mongo.connect(MONGO_URI, {}, function (err, _db) {
   // Escape our closure.
   db = _db;
-
-  var port = process.env.PORT || 3000;
   console.log("starting server");
   app.listen(port);
   console.log("that was cool");
 });
->>>>>>> 71691ed4280ab3e52aef215ae49eef539ab56afa
