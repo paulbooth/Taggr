@@ -1,7 +1,3 @@
-// door tracker
-// var apiKey = '423298101062880';
-// var secretKey = '3ea916ceaa6675538845a6ad37268692';
-
 //taggr
 var apiKey = '162309810576217';
 var secretKey = 'cfcce3d3e6a2cec6bae74c90b9ca3387';
@@ -10,7 +6,8 @@ var argv = process.argv; // I don't think this is needed anymore
 var https = require('https'), http = require('http');
 var querystring = require('querystring');
 
-var hostUrl = 'http://thepaulbooth.com:3727';
+var port = process.env.PORT || 5000;
+var hostUrl = 'http://lifegraph.herokuapp.com:' + port;
 
 var express = require('express'),
     app = express();
