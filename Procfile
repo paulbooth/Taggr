@@ -1,1 +1,1 @@
-web: node web.js
+web: node taggr_public_server.js

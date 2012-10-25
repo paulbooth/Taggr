@@ -1,0 +1,23 @@
+!!! 5
+html(lang='en')
+  head
+    title Taggr
+    link(rel='stylesheet', href='bootstrap/css/bootstrap.min.css')
+    script(src='jquery.js')
+    script(src='connected-client.js')
+  body
+    h1 You are now connected to your Taggr, #{name}!
+    div Taggr brings your online identity offline. Check-in to your favorite spots, stay in touch with new friends, and play new real-life games.
+    ul
+        li Tap your Taggr to tag in!
+        li
+            | login to 
+            a(href='http://thepaulbooth.com:3727') http://thepaulbooth.com:3727 
+            |  to remove the taggr if you lose it
+    span
+        h1
+          p Logging out in 
+            span(id='countdown') 10
+
+    a(href='/logout')  Logout now
+    a(href='/taggr') Stay Logged In

@@ -1,0 +1,16 @@
+#spot_name_div {
+	display : inline;
+}
+
+#spot_image_div {
+	display : inline;
+}
+
+#spot_img {
+	display : inline;
+	vertical-align : middle;
+}
+
+#spot_name {
+	display : inline;
+}

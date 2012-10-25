@@ -1,0 +1,39 @@
+
+!!! 5
+html(lang='en')
+  head
+    title Taggr
+    script(src='http://localhost:8080/socket.io/socket.io.js')
+    script(src='jquery.js')
+    - var activated = (uids.length > 0)
+    script
+      var activated = #{activated};
+    script(src='taggr-client.js')
+    link(rel='stylesheet', href='bootstrap/css/bootstrap.min.css')
+    link(rel='stylesheet', href='/default.css')
+  body
+    div(id='spot_name_div')
+      h1(id='spot_name') Trying to connect to local spot...
+    div(id='spot_image_div')
+    div Logged in as #{name}!  
+      a(href='/logout') Logout
+    - if(uids.length)
+      h2 You already have an active taggr. Why don't you tag in!
+      p Lost your taggr somewhere? 
+        a(id='remove_tag', href='/clear_user') Remove activated Taggr
+    - else
+      h2 You don't have a taggr associated with your account. Tap a taggr to activate it.
+    br
+    div(id='connect_tag_div')
+      - if(uids.length)
+        a(id='connect_tag')
+      - else
+        h1
+          a(id='connect_tag') Tap a Taggr
+    - if (uids.length)
+      h3 Activated Taggr Keys:
+      ul(id='uids')
+        - uids.forEach(function(uid){
+          li
+            #{uid.uid}
+        - })
