@@ -6,7 +6,7 @@
 var apiKey = '162309810576217';
 var secretKey = 'cfcce3d3e6a2cec6bae74c90b9ca3387';
 
-var argv = process.argv;
+var argv = process.argv; // I don't think this is needed anymore
 var https = require('https'), http = require('http');
 var querystring = require('querystring');
 
