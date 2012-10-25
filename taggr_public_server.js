@@ -430,7 +430,8 @@ mongo.connect(MONGO_URI, {}, function (err, _db) {
   // Escape our closure.
   db = _db;
 
+  var port = process.env.PORT || 3000;
   console.log("starting server");
-  app.listen(3727);
+  app.listen(port);
   console.log("that was cool");
 });
