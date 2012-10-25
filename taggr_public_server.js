@@ -6,8 +6,7 @@ var argv = process.argv; // I don't think this is needed anymore
 var https = require('https'), http = require('http');
 var querystring = require('querystring');
 
-var port = process.env.PORT || 3000;
-var hostUrl = 'http://lifegraph.herokuapp.com:' + port;
+var hostUrl = 'http://lifegraph.herokuapp.com';
 
 var express = require('express'),
     app = express();
@@ -45,8 +44,7 @@ function tryOgPost(uid, config, callback) {
   var target_path = '/try_check_in/' + encodeURIComponent(uid) + "/" + encodeURIComponent(config.spot_name) + "?spot_image=" + encodeURIComponent(config.spot_image);
 
   var options = {
-      host: 'thepaulbooth.com',
-      port: 3727,
+      host: 'lifegraph.herokuapp.com',
       path: target_path
     };
 
@@ -359,7 +357,7 @@ app.get('/spot/:spot_name', function(req, res) {
 
 function makeOpenGraphRequest(access_token, spot_name, spot_image) {
   console.log("Tagging user with access token " + access_token + " at location " + spot_name + " with image:" + spot_image);
-  var spot_url = 'http://thepaulbooth.com:3727/spot/' + spot_name + (spot_image ? ("?spot_image=" + spot_image) : "")
+  var spot_url = 'http://lifegraph.herokuapp.com/spot/' + spot_name + (spot_image ? ("?spot_image=" + spot_image) : "")
   openGraph.publish('me',access_token,'tag', 'spot', spot_url, function(err,response){
     console.log(response);
   })
@@ -425,6 +423,7 @@ console.log("Connecting to", MONGO_URI);
 mongo.connect(MONGO_URI, {}, function (err, _db) {
   // Escape our closure.
   db = _db;
+  var port = process.env.PORT || 3000;
   console.log("starting server");
   app.listen(port);
   console.log("that was cool");
