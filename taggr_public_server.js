@@ -16,15 +16,7 @@ var express = require('express'),
 var OpenGraph = require('facebook-open-graph'),
     openGraph = new OpenGraph('fbtaggr');
 
-var mongo = require('mongodb'),
-  Server = mongo.Server,
-  Connection = mongo.Connection,
-  Db = mongo.Db;
-var mongo_host = process.env['MONGO_NODE_DRIVER_HOST'] != null ? process.env['MONGO_NODE_DRIVER_HOST'] : 'localhost';
-var mongo_port = process.env['MONGO_NODE_DRIVER_PORT'] != null ? process.env['MONGO_NODE_DRIVER_PORT'] : Connection.DEFAULT_PORT;
-
-console.log("Connecting to " + mongo_host + ":" + mongo_port);
-var db = new Db('taggrdb', new Server(mongo_host, mongo_port, {}), {safe:false});
+var mongo = require('mongodb');
 
 var verified_users = [];
 // For cookies! So each person who connects is not all the same person
@@ -212,25 +204,23 @@ app.get('/taggr', function(req, res) {
 
 // helper endpoint for checking the DB
 app.get('/uids', function(req, res) {
-  db.open(function(err, db) {
-    db.collection('uids', function(err, collection) {
-      collection.find( function(err, cursor) {
-        var result = "";
-        cursor.each(function(err, item) {
-          if(item != null) {
-            console.dir(item);
-            //console.log("created at " + new Date(item._id.generationTime) + "\n")
-            result += "\n" + item.uid + ":" + item.access_token;
-          }
-          // Null signifies end of iterator
-          if(item == null) {
-            db.close();
-            res.setHeader('Content-Type', 'text/plain');
-            res.send(result);
-          }
-        });
-      });          
-    });
+  db.collection('uids', function(err, collection) {
+    collection.find( function(err, cursor) {
+      var result = "";
+      cursor.each(function(err, item) {
+        if(item != null) {
+          console.dir(item);
+          //console.log("created at " + new Date(item._id.generationTime) + "\n")
+          result += "\n" + item.uid + ":" + item.access_token;
+        }
+        // Null signifies end of iterator
+        if(item == null) {
+          db.close();
+          res.setHeader('Content-Type', 'text/plain');
+          res.send(result);
+        }
+      });
+    });          
   });
 });
 
@@ -268,27 +258,25 @@ app.get('/try_check_in/:uid/:spot_name', function(req, res) {
   // console.log("before");
   // console.log("THE UID WE ARE TYING TO FIND IS:" + uid + ":" + uid.length);
   // console.log("after");
-  db.open(function(err, db) {
-    db.collection('uids', function(err, collection) {
-      // console.log("going to try to find it now");
-      collection.find({ uid : uid }, function(err, cursor) {
-        var alreadyStored = false;
-        cursor.each(function(err, item) {
-          if(item != null) {
-            console.dir(item);
-            //console.log("created at " + new Date(item._id.generationTime) + "\n")
-            alreadyStored = true;
-            makeOpenGraphRequest(item.access_token, spot_name, spot_image)
-          }
-          // Null signifies end of iterator
-          if(item == null) {
-            db.close();
-            res.statusCode = alreadyStored? 200 : 205;
-            res.end();
-          }
-        });
-      });          
-    });
+  db.collection('uids', function(err, collection) {
+    // console.log("going to try to find it now");
+    collection.find({ uid : uid }, function(err, cursor) {
+      var alreadyStored = false;
+      cursor.each(function(err, item) {
+        if(item != null) {
+          console.dir(item);
+          //console.log("created at " + new Date(item._id.generationTime) + "\n")
+          alreadyStored = true;
+          makeOpenGraphRequest(item.access_token, spot_name, spot_image)
+        }
+        // Null signifies end of iterator
+        if(item == null) {
+          db.close();
+          res.statusCode = alreadyStored? 200 : 205;
+          res.end();
+        }
+      });
+    });          
   });
 });
 
@@ -300,25 +288,23 @@ app.get('/get_ids/:access_token', function(req, res) {
 });
 
 function getUidsForAccessToken(access_token, callback) {
-  db.open(function(err, db) {
-    db.collection('uids', function(err, collection) {
-      // console.log("going to try to find it now");
-      collection.find({ access_token : access_token }, function(err, cursor) {
-        var matched = []
-        cursor.each(function(err, item) {
-          if(item != null) {
-            console.dir(item);
-            //console.log("created at " + new Date(item._id.generationTime) + "\n")
-            matched.push(item);
-          }
-          // Null signifies end of iterator
-          if(item == null) {
-            db.close();
-            callback(JSON.stringify(matched));
-          }
-        });
-      });          
-    });
+  db.collection('uids', function(err, collection) {
+    // console.log("going to try to find it now");
+    collection.find({ access_token : access_token }, function(err, cursor) {
+      var matched = []
+      cursor.each(function(err, item) {
+        if(item != null) {
+          console.dir(item);
+          //console.log("created at " + new Date(item._id.generationTime) + "\n")
+          matched.push(item);
+        }
+        // Null signifies end of iterator
+        if(item == null) {
+          db.close();
+          callback(JSON.stringify(matched));
+        }
+      });
+    });          
   });
 }
 
@@ -377,46 +363,42 @@ function makeOpenGraphRequest(access_token, spot_name, spot_image) {
 
 // Adds and links the access_token and the uid in the database
 function storeAccessTokenAndUid(access_token, uid, callback) {
-  db.open(function(err, db) {
-    db.collection('uids', function(err, collection) {
-      collection.find({'uid':uid}, function(err, cursor) {
-        var alreadyStored = false;
-        cursor.each(function(err, item) {
-          if(item != null) {
-            console.log("Found this UID in the DB: " + item.uid);
-            alreadyStored = true;
-            //console.log("created at " + new Date(item._id.generationTime) + "\n")
+  db.collection('uids', function(err, collection) {
+    collection.find({'uid':uid}, function(err, cursor) {
+      var alreadyStored = false;
+      cursor.each(function(err, item) {
+        if(item != null) {
+          console.log("Found this UID in the DB: " + item.uid);
+          alreadyStored = true;
+          //console.log("created at " + new Date(item._id.generationTime) + "\n")
+        }
+        // Null signifies end of iterator
+        if(item == null) {
+          
+          if (!alreadyStored) {
+            console.log("storing this into DB:" + uid +"\t " + access_token);
+            collection.insert({'uid':uid, 'access_token':access_token});
           }
-          // Null signifies end of iterator
-          if(item == null) {
-            
-            if (!alreadyStored) {
-              console.log("storing this into DB:" + uid +"\t " + access_token);
-              collection.insert({'uid':uid, 'access_token':access_token});
-            }
-            db.close();
-            callback();
-          }
-        });
+          db.close();
+          callback();
+        }
       });
     });
   });
 }
 
 function fetchUserFromDatabaseWithUID(uid, callback) {
-  db.open(function(err, db) {
-    db.collection('uids', function(err, collection) {
-      collection.find({'uid':uid}, function(err, cursor) {
-        cursor.each(function(err, item) {
-          if(item != null) {
-            console.log("Found this UID in the DB: " + item.uid);
-            callback(item);
-          }
-          if (item == null) {
-            db.close();
-            callback(null);
-          }
-        });
+  db.collection('uids', function(err, collection) {
+    collection.find({'uid':uid}, function(err, cursor) {
+      cursor.each(function(err, item) {
+        if(item != null) {
+          console.log("Found this UID in the DB: " + item.uid);
+          callback(item);
+        }
+        if (item == null) {
+          db.close();
+          callback(null);
+        }
       });
     });
   });
@@ -424,20 +406,34 @@ function fetchUserFromDatabaseWithUID(uid, callback) {
 
 // Delete the database entry linking an access token with a uid
 function disassociateUserFromTaggr(access_token, callback) {
-
-// Open up the database
-db.open(function(err, db) {
   // Grab the uid collection
-    db.collection('uids', function(err, collection) {
-      // Remove the entry with the access token provided
-      collection.remove({'access_token':access_token}, function(err, cursor) {
-        db.close();
-        callback();
-      });
+  db.collection('uids', function(err, collection) {
+    // Remove the entry with the access token provided
+    collection.remove({'access_token':access_token}, function(err, cursor) {
+      db.close();
+      callback();
     });
   });
-
 }
+<<<<<<< HEAD
 console.log("starting server. " + hostUrl);
 app.listen(port);
 console.log("that was cool");
+=======
+
+// Database
+
+var db;
+var MONGO_URI = process.env.MONGOLAB_URI || 'mongodb://localhost:27017/lifegraph';
+
+// Open up the database
+console.log("Connecting to", MONGO_URI);
+mongo.connect(MONGO_URI, {}, function (err, _db) {
+  // Escape our closure.
+  db = _db;
+
+  console.log("starting server");
+  app.listen(3727);
+  console.log("that was cool");
+});
+>>>>>>> 71691ed4280ab3e52aef215ae49eef539ab56afa
