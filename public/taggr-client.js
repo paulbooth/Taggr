@@ -6,11 +6,11 @@
     // $.post("http://thepaulbooth.com:3727/newuid/" + data.uid);
     if (activated) {
     	$('#connect_tag')
-	    	.attr('href', "http://thepaulbooth.com:3727/newuid/" + data.uid)
+	    	.attr('href', "http://lifegraph.herokuapp.com/newuid/" + data.uid)
 	    	.text("Click to switch to ID #" + data.uid);
     } else {
 	    $('#connect_tag')
-	    	.attr('href', "http://thepaulbooth.com:3727/newuid/" + data.uid)
+	    	.attr('href', "http://lifegraph.herokuapp.com/newuid/" + data.uid)
 	    	.text("Click to activate ID #" + data.uid);
 	}
   });
