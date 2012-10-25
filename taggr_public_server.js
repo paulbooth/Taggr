@@ -1,7 +1,3 @@
-// door tracker
-// var apiKey = '423298101062880';
-// var secretKey = '3ea916ceaa6675538845a6ad37268692';
-
 //taggr
 var apiKey = '162309810576217';
 var secretKey = 'cfcce3d3e6a2cec6bae74c90b9ca3387';
@@ -10,7 +6,7 @@ var argv = process.argv; // I don't think this is needed anymore
 var https = require('https'), http = require('http');
 var querystring = require('querystring');
 
-var hostUrl = 'http://thepaulbooth.com:3727';
+var hostUrl = 'http://lifegraph.herokuapp.com';
 
 var express = require('express'),
     app = express();
@@ -19,7 +15,11 @@ var express = require('express'),
 var OpenGraph = require('facebook-open-graph'),
     openGraph = new OpenGraph('fbtaggr');
 
+// Database
 var mongo = require('mongodb');
+var db;
+var MONGO_URI = process.env.MONGOLAB_URI || 'mongodb://localhost:27017/lifegraph';
+
 
 var verified_users = [];
 // For cookies! So each person who connects is not all the same person
@@ -44,8 +44,7 @@ function tryOgPost(uid, config, callback) {
   var target_path = '/try_check_in/' + encodeURIComponent(uid) + "/" + encodeURIComponent(config.spot_name) + "?spot_image=" + encodeURIComponent(config.spot_image);
 
   var options = {
-      host: 'thepaulbooth.com',
-      port: 3727,
+      host: 'lifegraph.herokuapp.com',
       path: target_path
     };
 
@@ -358,7 +357,7 @@ app.get('/spot/:spot_name', function(req, res) {
 
 function makeOpenGraphRequest(access_token, spot_name, spot_image) {
   console.log("Tagging user with access token " + access_token + " at location " + spot_name + " with image:" + spot_image);
-  var spot_url = 'http://thepaulbooth.com:3727/spot/' + spot_name + (spot_image ? ("?spot_image=" + spot_image) : "")
+  var spot_url = 'http://lifegraph.herokuapp.com/spot/' + spot_name + (spot_image ? ("?spot_image=" + spot_image) : "")
   openGraph.publish('me',access_token,'tag', 'spot', spot_url, function(err,response){
     console.log(response);
   })
@@ -419,17 +418,11 @@ function disassociateUserFromTaggr(access_token, callback) {
   });
 }
 
-// Database
-
-var db;
-var MONGO_URI = process.env.MONGOLAB_URI || 'mongodb://localhost:27017/lifegraph';
-
 // Open up the database
 console.log("Connecting to", MONGO_URI);
 mongo.connect(MONGO_URI, {}, function (err, _db) {
   // Escape our closure.
   db = _db;
-
   var port = process.env.PORT || 3000;
   console.log("starting server");
   app.listen(port);

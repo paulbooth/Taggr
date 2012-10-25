@@ -73,8 +73,7 @@ serialPort.on("data", function (data) {
     }
 
     var options = {
-      host: 'thepaulbooth.com',
-      port: 3727,
+      host: 'lifegraph.herokuapp.com',
       path: '/try_check_in/' + encodeURIComponent(uid) + "/" + encodeURIComponent(config.spot_name) + "?spot_image=" + encodeURIComponent(config.spot_image)
     };
     console.log("making request to /try_check_in/" + encodeURIComponent(uid) + "/" + encodeURIComponent(config.spot_name))
@@ -108,7 +107,7 @@ serialPort.on("data", function (data) {
         else if (!connected_to_browser) {
           sys.puts("Received a new UID but not connected to browser");
           browserCommand = getCorrectBrowserCommand();
-          childProcess.exec(browserCommand + ' http://thepaulbooth.com:3727/login', function (error, stdout, stderr) {
+          childProcess.exec(browserCommand + ' http://lifegraph.herokuapp.com/login', function (error, stdout, stderr) {
 
             console.log('Browser done launching.');
 
