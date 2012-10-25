@@ -9,14 +9,11 @@
   },
   "dependencies": {
     "connect": "~2.6.0",
-    "easymongo": "~0.1.5",
     "express": "~3.0.0rc5",
     "facebook-open-graph": "~0.0.3",
     "jade": "~0.27.6",
     "mongodb": "~1.1.11",
-    "n": "~0.7.3",
     "querystring": "~0.1.0",
-    "serialport": "~1.0.8",
     "socket.io": "~0.9.10"
   },
   "devDependencies": {},
