@@ -438,6 +438,6 @@ db.open(function(err, db) {
   });
 
 }
-console.log("starting server");
-app.listen(3727);
+console.log("starting server. " + hostUrl);
+app.listen(port);
 console.log("that was cool");
