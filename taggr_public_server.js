@@ -20,7 +20,6 @@ var mongo = require('mongodb');
 var db;
 var MONGO_URI = process.env.MONGOLAB_URI || 'mongodb://localhost:27017/lifegraph';
 
-
 var verified_users = [];
 // For cookies! So each person who connects is not all the same person
 var MemoryStore = require('connect').session.MemoryStore;
@@ -420,7 +419,7 @@ function disassociateUserFromTaggr(access_token, callback) {
 
 // Open up the database
 console.log("Connecting to", MONGO_URI);
-mongo.connect(MONGO_URI, {}, function (err, _db) {
+mongo.connect(MONGO_URI, {safe: false}, function (err, _db) {
   // Escape our closure.
   db = _db;
   var port = process.env.PORT || 3000;
